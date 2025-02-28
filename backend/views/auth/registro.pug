@@ -1,0 +1,38 @@
+extends ../layout/index
+
+block contenido
+    div.py-5 
+        h1(class="d-flex justify-content-center") Nombre
+            span Proyecto
+        div(class="d-flex justify-content-center" style="font-size: 30px;")= texto
+
+        if errores
+            div(class="border shadow mx-auto my-5 py-2" style="background:linear-gradient(135deg, #6e8efb, #4a6cf7); height:auto; max-width:500px; border-radius: 4px; text-align:center; color: #ffebeb;")
+                div(class="my-10")
+                    each error in errores
+                        p(class="p-2 mb-1" , style="font-weight:bold;")= error.msg
+
+        a(href="https://www.google.com",target="_blank")
+
+        .mt-5.mx-auto(style="max-width:500px;")
+            div.bg-white.py-3.px-4.shadow.border(style="min-height: 400px;")
+                form(method="POST" action="/auth/registro" noValidate) 
+                    input(type="hidden" name="_csrf" value= csrfToken)
+                    div
+                        <label class="form-label text-uppercase text-muted mb-2 fw-bold " for="nombre"> Tu Nombre</label>
+                        <input id="nombre" class="form-control px-3 py-2 border rounded-3 placeholder-muted" placeholder="Tu Nombre" type="text" name="nombre" value= "#{usuario ? usuario.nombre : ''}">
+                    div.mt-2
+                        <label class="form-label text-uppercase text-muted mb-2 fw-bold " for="email"> Email de Registro</label>
+                        <input id="email" class="form-control px-3 py-2 border rounded-3 placeholder-muted" placeholder="Tu Email" type="text" name="email"  value= "#{usuario ? usuario.email : ''}">
+                    div.mt-2
+                        <label class="form-label text-uppercase text-muted mb-2 fw-bold " for="password"> Contraseña</label>
+                        <input id="password" class="form-control px-3 py-2 border rounded-3 placeholder-muted" placeholder="Tu Password" type="password" name="password">
+                    div.mt-2
+                        <label class="form-label text-uppercase text-muted mb-2 fw-bold " for="repeat-password"> Repetir Contraseña</label>
+                        <input id="repeat-password" class="form-control px-3 py-2 border rounded-3 placeholder-muted" placeholder="Repite Password" type="password" name="repeat-password">
+                    div(class="d-flex align-items-center justify-content-between mt-2")
+                        a.text-muted.fs-6.text-decoration-none(href="/auth/login") ¿Ya tienes cuenta? Inicia Sesión
+                        a.text-muted.fs-6.text-decoration-none(href="/auth/olvide-password") Olvidé mi Password
+                    input(type="submit" value="Crear Cuenta" class="btn btn-primary mt-3")
+
+

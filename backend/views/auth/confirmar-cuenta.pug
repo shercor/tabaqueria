@@ -1,0 +1,13 @@
+extends ../layout/index
+
+block contenido
+    div.py-5 
+        h1(class="d-flex justify-content-center") Nombre
+            span Proyecto
+        div(class="d-flex justify-content-center" style="font-size: 30px;")= texto
+
+        //p.fs-4.text-center.fw-bold.my-4(class="")=mensaje
+        p(class= error ? 'bg-red-500' : 'bg-green-500').py2-px-5.fw-bold= mensaje
+
+        if !error
+            a(href="/auth/login" class="text-center fw-bold fs-4 ") Ya puedes iniciar sesión

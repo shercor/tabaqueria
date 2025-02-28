@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: prueba_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - DB_NAME=db_prueba
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    #command: ["sh", "-c", "wait-for-it db:3306 -- npm run server"] 
+    command: ["sh", "-c", "wait-for-it db:3306 -- nodemon --legacy-watch index.js"] 
+
+  db:
+    image: mysql:8
+    container_name: prueba_db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: db_prueba
+    ports:
+      - "4306:3306"
+    volumes:
+      - ./db:/var/lib/mysql

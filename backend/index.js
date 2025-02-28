@@ -6,6 +6,8 @@ import usuarioRoutes from './routes/usuarioRoutes.js'
 import propiedadesRoutes from './routes/propiedadesRoutes.js'
 import verificarJWT from './middlewares/authMiddleware.js';
 import db from './config/db.js'
+import './models/Categoria.js';
+import './models/Producto.js'
 
 //Crear la app
 const app = express();

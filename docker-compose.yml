@@ -4,14 +4,14 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: prueba_backend
+    container_name: tabaqueria_backend
     ports:
       - "3000:3000"
     environment:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=secret
-      - DB_NAME=db_prueba
+      - DB_NAME=tabaqueria
     depends_on:
       - db
     volumes:
@@ -21,10 +21,10 @@ services:
 
   db:
     image: mysql:8
-    container_name: prueba_db
+    container_name: tabaqueria_db
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: db_prueba
+      MYSQL_DATABASE: tabaqueria
     ports:
       - "4306:3306"
     volumes:

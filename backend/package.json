@@ -1,7 +1,7 @@
 {
-  "name": "prueba_node",
+  "name": "tabaqueria_web",
   "version": "1.0.0",
-  "description": "proyecto hecho en node :3",
+  "description": "Tienda web para tabaquería",
   "main": "index.js",
   "type": "module",
   "scripts": {

@@ -10,7 +10,7 @@ const Pedido = db.define('pedidos', {
     estado: {
         type: DataTypes.ENUM('carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'),
         allowNull: false,
-        defaultValue: 'pendiente',
+        defaultValue: 'carrito',
     },
     usuario_id: {
         type: DataTypes.INTEGER,

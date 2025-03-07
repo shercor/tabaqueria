@@ -8,6 +8,9 @@ import verificarJWT from './middlewares/authMiddleware.js';
 import db from './config/db.js'
 import './models/Categoria.js';
 import './models/Producto.js'
+import './models/DetallePedido.js'
+import './models/Pedido.js'
+import './models/MetodosPago.js'
 
 //Crear la app
 const app = express();

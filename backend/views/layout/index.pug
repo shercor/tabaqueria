@@ -10,20 +10,22 @@ html(lang="en")
 
         //- Ruta para utilizar Bootstrap en el proyecto
         <link rel="stylesheet" href="/dist/css/bootstrap.min.css">
+
+        //- Ruta para utilizar FontAwesome en el proyecto
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <script src="/dist/js/bootstrap.bundle.min.js"></script>
 
-    body.min-h-screen.bg-gray-50(style="background-color:#f6f8fb;")
+    body.min-h-screen.bg-gray-50(style="background-color:#f6f8fb; font-family: sans-serif;")
 
         //- Header de la aplicación
         if barra
             include ../components/header
             div(id="main-menu", class="d-flex text-uppercase fw-bold align-items-center", style=" height: 50px;  background-color: #ebc579 !important; justify-content: space-around; padding: 0px 200px;")
-                a.main-menu-btn Menu 1
-                a.main-menu-btn Menu 2
-                a.main-menu-btn Menu 3
-                a.main-menu-btn Menu 4
-                a.main-menu-btn Menu 5
-                a.main-menu-btn Menu 6
+                a.main-menu-btn(href="/index") Inicio
+                a.main-menu-btn(href="/productos/lista") Productos
+                a.main-menu-btn Sobre Nosotros
+                a.main-menu-btn Ayuda
+                a.main-menu-btn Contáctanos
         else 
             div(id="slider-container", style="background-color: black; height: 10vh;")
             //#f6f8fb;

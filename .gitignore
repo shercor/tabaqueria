@@ -1,3 +1,4 @@
 db/mysql.sock
 backend/.env
+backend/public/uploads
 db

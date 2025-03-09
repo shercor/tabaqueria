@@ -3,12 +3,11 @@ extends ../layout/index
 block contenido
     div.py-5 
         h1(class="d-flex justify-content-center") Crear Producto
-        div(class="d-flex justify-content-center" style="font-size: 30px;") Mis elementos
-
-        .mt-5.mx-auto(style="max-width:500px;")
+        .mt-5.mx-auto(style="max-width:600px;")
             div.bg-white.py-3.px-4.shadow
                 form(action="/productos/crear" method="POST" enctype="multipart/form-data")
                     input(type="hidden" name="_csrf" value= csrfToken)
+                    input(type="hidden" name="estado" value= "1")
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="nombre") Nombre del Producto
@@ -16,32 +15,30 @@ block contenido
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="descripcion") Descripción
-                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3" required)
+                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3")
                     
-                    div.mt-2
-                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="precio") Precio
-                        input(type="number" id="precio" name="precio" step="10" class="form-control" required)
+                    div.row
+                        div.mt-2.col-4
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="precio") Precio
+                            div.input-group
+                                span.input-group-text
+                                    i.fas.fa-dollar-sign
+                                input(type="number" id="precio" name="precio" class="form-control" required)
+                        
+                        div.mt-2.col-2
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="stock") Stock
+                            input(type="number" id="stock" name="stock" class="form-control" required)
                     
-                    div.mt-2
-                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="stock") Stock
-                        input(type="number" id="stock" name="stock" class="form-control" required)
-                    
-                    div.mt-2
-                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="categoria") Categoría
-                        select(id="categoria" name="categoria_id" class="form-control")
-                            option(value="") Selecciona una categoría
-                            each categoria in categorias
-                                option(value=categoria.id) #{categoria.nombre}
+                        div.mt-2.col-6
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="categoria") Categoría
+                            select(id="categoria" name="categoria_id" class="form-control")
+                                option(value="") Selecciona una categoría
+                                each categoria in categorias
+                                    option(value=categoria.id) #{categoria.nombre}
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="imagen") Imagen
                         input(type="file" id="imagen" name="imagen" accept="image/*" class="form-control")
-                    
-                    div.mt-2
-                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="estado") Estado
-                        select(id="estado" name="estado" class="form-control")
-                            option(value="1") Activo
-                            option(value="0") Inactivo
                     
                     input(type="submit" value="Guardar Producto" class="btn btn-primary mt-3")
 

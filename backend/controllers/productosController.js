@@ -51,11 +51,33 @@ const ingresarProducto = async (req, res) => {
         console.error(error);
         res.status(500).send('Error al crear el producto');
     }
+}
 
-
+const listaProductos = async (req, res) => {
+    
+    const categoriaId = req.params.id ?? null;
+    let productos = null;
+    let categoria = null;
+    console.log(categoriaId);
+    if (categoriaId){
+        'Se agregó categoría';
+        productos = await Producto.findAll( {where: {categoria_id : categoriaId}});
+        categoria = await Categoria.findOne({where: {id: categoriaId}})
+    } else {
+        'No se agregó categoría'
+        productos = await Producto.findAll();
+    }
+    console.log('Los productos son: ' , productos);
+    res.render( 'productos/lista', {
+        pagina: categoriaId ? categoria.nombre : 'Todos los productos',
+        barra: true,
+        csrfToken: req.csrfToken(),
+        productos
+    })
 }
 
 export{
     crear,
-    ingresarProducto
+    ingresarProducto,
+    listaProductos
 }

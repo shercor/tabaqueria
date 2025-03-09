@@ -4,8 +4,10 @@ import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import propiedadesRoutes from './routes/propiedadesRoutes.js'
+import productosRoutes from './routes/productosRoutes.js'
 import verificarJWT from './middlewares/authMiddleware.js';
 import db from './config/db.js'
+import upload from './middlewares/uploadFilesMiddleware.js';
 import './models/Categoria.js';
 import './models/Producto.js'
 import './models/DetallePedido.js'
@@ -17,6 +19,9 @@ const app = express();
 
 //Habilitar lectura de datos de formularios para Express
 app.use(express.urlencoded({extended: true}))
+
+// Middleware de subida de archivos
+app.use(upload.single('imagen'));
 
 // Habilitar Cookie Parser
 app.use( cookieParser())
@@ -51,6 +56,7 @@ app.use((req, res, next) => {
 
 // Routing
 app.use('/auth' , usuarioRoutes)
+app.use('/productos' , productosRoutes)
 app.use('/' , propiedadesRoutes)
 
 

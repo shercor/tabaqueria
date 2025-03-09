@@ -5,6 +5,6 @@ import verificarJWT from "../middlewares/authMiddleware.js"
 const router = express.Router()
 
 router.get('', admin)
-router.get('/mis-propiedades', admin)
+router.get('/index', admin)
 
 export default router

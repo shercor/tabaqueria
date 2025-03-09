@@ -11,7 +11,7 @@ const Producto = db.define('productos', {
         type: DataTypes.TEXT,
     },
     precio: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     stock: {

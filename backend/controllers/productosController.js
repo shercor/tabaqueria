@@ -1,4 +1,5 @@
 import {check, validationResult} from 'express-validator'
+import { Op } from 'sequelize';
 import Categoria from '../models/Categoria.js';
 import Producto from '../models/Producto.js';
 
@@ -54,26 +55,86 @@ const ingresarProducto = async (req, res) => {
 }
 
 const listaProductos = async (req, res) => {
-    
+    console.log(req.params);
     const categoriaId = req.params.id ?? null;
+    const {nombre, precioMin, precioMax} = req.query
     let productos = null;
     let categoria = null;
-    console.log(categoriaId);
-    if (categoriaId){
-        'Se agregó categoría';
-        productos = await Producto.findAll( {where: {categoria_id : categoriaId}});
-        categoria = await Categoria.findOne({where: {id: categoriaId}})
-    } else {
-        'No se agregó categoría'
-        productos = await Producto.findAll();
+    console.log('AAAAAAAAAAAAAAAAAA');
+    // console.log(precioMax);
+    // console.log(formatearAEntero(precioMax));
+    console.log(req.query);
+
+    // Crear un objeto para las condiciones de la consulta
+    const condiciones = {};
+
+    // Filtrar por categoría si existe
+    if (categoriaId) {
+        condiciones.categoria_id = categoriaId;
+        categoria = await Categoria.findOne({ where: { id: categoriaId } });
     }
-    console.log('Los productos son: ' , productos);
+
+    if (nombre){
+        condiciones.nombre = {
+            [Op.like]: `%${nombre}%`
+        }
+    }
+
+    // Filtrar por rango de precios si existen
+    if (precioMin !== undefined && precioMax !== undefined) {
+        const precioMinNum = parseFloat(formatearAEntero(precioMin));
+        const precioMaxNum = parseFloat(formatearAEntero(precioMax));
+
+        if (!isNaN(precioMinNum) && !isNaN(precioMaxNum)) {
+            condiciones.precio = {
+                [Op.between]: [precioMinNum, precioMaxNum],
+            };
+        } else {
+            console.error('precioMin o precioMax no son números válidos');
+        }
+    } else if (precioMin !== undefined) {
+        const precioMinNum = parseFloat(formatearAEntero(precioMin));
+        if (!isNaN(precioMinNum)) {
+            condiciones.precio = {
+                [Op.gte]: precioMinNum, // Mayor o igual que precioMin
+            };
+        } else {
+            console.error('precioMin no es un número válido');
+        }
+    } else if (precioMax !== undefined) {
+        const precioMaxNum = parseFloat(formatearAEntero(precioMax));
+        if (!isNaN(precioMaxNum)) {
+            condiciones.precio = {
+                [Op.lte]: precioMaxNum, // Menor o igual que precioMax
+            };
+        } else {
+            console.error('precioMax no es un número válido');
+        }
+    }
+
+    console.log(condiciones);
+    productos = await Producto.findAll({where: condiciones});
+    if (categoriaId){
+        categoria = await Categoria.findOne({where: {id: categoriaId}})
+    } 
+
     res.render( 'productos/lista', {
         pagina: categoriaId ? categoria.nombre : 'Todos los productos',
+        params: req.params,
+        nombre: nombre ? nombre : null,
+        precioMin: precioMin ? precioMin : '',
+        precioMax: precioMax ? precioMax : '',
         barra: true,
+        categorias: await Categoria.findAll(),
         csrfToken: req.csrfToken(),
         productos
     })
+}
+
+function formatearAEntero(valorFormateado) {
+    const valorSinFormato = valorFormateado.replace(/[^0-9]/g, '');
+    const valorEntero = parseInt(valorSinFormato, 10);
+    return valorEntero;
 }
 
 export{

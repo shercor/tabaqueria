@@ -1,21 +1,23 @@
 extends ../layout/index
 
 block contenido
-    div.py-5 
-        h1(class="d-flex justify-content-center")= pagina
-        .mt-5.mx-auto(style="max-width:1400px;")
-            div.bg-white.py-3.px-4.shadow.row
-                if productos
-                    each producto in productos
-                        div.mb-5.col-3
-                            div.pb-3(style="display: flex; flex-direction: column; align-items: center; border:solid #c1b8b8 1px; border-radius:10px; overflow:hidden;")
-                                img(src=`${producto.imagen ? producto.imagen : '/general/no-image.jpg'}` class="mx-2" style="width:100%; height: 300px; object-fit: cover; border-bottom: solid #b6bbbf 1px;")
-                                div.d-flex.align-items-center(style="font-weight:bold; height:68px")
-                                    p(class="p-2 mb-1" style="text-align: center;")= producto.nombre
-                                p(class="pb-3 mb-1" style="")= `$${producto.precio}`
-                                button(type="button" style="font-size:13px; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; width: 100%; max-width: 200px;")
-                                    i(class="fa-solid fa-cart-shopping") Añadir al carro
-                
+    div.py-5.d-flex(id="contenedor-productos" style="width:100%;")
+        include ../components/filtro-productos      
+        div.container(style="width:50%;")
+            h1(class="d-flex justify-content-center")= pagina
+            .mt-5.mx-auto(style="max-width:1400px;")
+                div.bg-white.py-3.px-4.shadow.row
+                    if productos
+                        each producto in productos
+                            div.mb-5.col-3
+                                div.pb-3.product-item(style="display: flex; flex-direction: column; align-items: center; border:solid #c1b8b8 1px; border-radius:10px; overflow:hidden;")
+                                    img(src=`${producto.imagen ? producto.imagen : '/general/no-image.jpg'}` class="mx-2" style="width:100%; height: 300px; object-fit: cover; border-bottom: solid #b6bbbf 1px;")
+                                    div.d-flex.align-items-center(style="font-weight:bold; height:68px")
+                                        p(class="p-2 mb-1" style="text-align: center;")= producto.nombre
+                                    p(class="pb-3 mb-1" style="")= `$${producto.precio}`
+                                    button(type="button" style="font-size:13px; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; width: 100%; max-width: 200px;")
+                                        i(class="fa-solid fa-cart-plus") Añadir al carro
+        div(style="width:25%;")
 
     script.
         console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});

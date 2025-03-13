@@ -1,0 +1,26 @@
+.filter-options-container{
+    width:25%; 
+    padding: 95px 70px 0px 100px;
+}
+
+.filter-options{
+    height: auto;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ajusta la sombra según sea necesario */
+    overflow: hidden;
+}
+
+.filter-header{
+    height: 50px;
+    .filter-icon{
+        background-color: green;
+        width: 65px;
+        border-radius: 0px 0px 0px 20px;
+    }
+}
+
+.product-item:hover{
+    background-color: #f5f5f5;
+}
+

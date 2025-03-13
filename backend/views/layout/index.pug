@@ -8,6 +8,9 @@ html(lang="en")
         //- Ruta para utilizar TailwindCss
         //- link(rel="stylesheet", href="/css/app.css")
 
+        //- Ruta para utilizar los estilos personalizados
+        link(rel="stylesheet", href="/css/index.css")
+
         //- Ruta para utilizar Bootstrap en el proyecto
         <link rel="stylesheet" href="/dist/css/bootstrap.min.css">
 
@@ -15,23 +18,26 @@ html(lang="en")
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <script src="/dist/js/bootstrap.bundle.min.js"></script>
 
+        <script src="/utilidades.js"></script>
     body.min-h-screen.bg-gray-50(style="background-color:#f6f8fb; font-family: sans-serif;")
 
         //- Header de la aplicación
         if barra
             include ../components/header
-            div(id="main-menu", class="d-flex text-uppercase fw-bold align-items-center", style=" height: 50px;  background-color: #ebc579 !important; justify-content: space-around; padding: 0px 200px;")
-                a.main-menu-btn(href="/index") Inicio
-                a.main-menu-btn(href="/productos/lista") Productos
-                a.main-menu-btn Sobre Nosotros
-                a.main-menu-btn Ayuda
-                a.main-menu-btn Contáctanos
+            div(id="main-menu", class="d-flex text-uppercase fw-bold align-items-center", style=" height: 50px; line-height:50px; justify-content: space-around; padding: 0px 200px; border: solid black 1px;")
+                a.main-menu-btn(href="/index" style="width:200px; text-align:center;") Inicio
+                a.main-menu-btn(href="/productos/lista" style="width:200px; text-align:center;") Productos
+                a.main-menu-btn(style="width:200px; text-align:center; max-height: 100%;") Sobre Nosotros
+                a.main-menu-btn(style="width:200px; text-align:center;") Ayuda
+                a.main-menu-btn(style="width:200px; text-align:center;") Contáctanos
         else 
             div(id="slider-container", style="background-color: black; height: 10vh;")
             //#f6f8fb;
 
 
-        main(class="mx-auto container mt-10 px-2")
+        //- main(class="mx-auto container mt-10 px-2" style="width:100%;")
+        //-     block contenido
+        main(class="mx-auto mt-10 px-2" style="width:100%;")
             block contenido
 
     style. 
@@ -41,7 +47,7 @@ html(lang="en")
             color: black;
         }
         .main-menu-btn:hover {
-            background-color: black;
+            background-color: #938d8d;;
             cursor: pointer;
             text-decorarion:none;
         }

@@ -1,0 +1,37 @@
+div.filter-options-container
+    div.filter-options
+        div.filter-header.d-flex.justify-content-between.mb-4
+            span.mx-4(style="line-height:50px; font-weight: bold; font-size: large;") Filtros
+            div.filter-icon.d-flex.align-items-center.justify-content-center(style="background-color: green; width: 50px; height: 50px;")
+                i.fa-solid.fa-filter(style="color: white;")
+
+        div.px-4
+            form(action="/productos/lista" method="GET")
+                div.form-group.mb-4
+                    label.mb-2(for="categoria") Categoría
+                    select.form-control(name="categoria" id="categoria")
+                        option(value="") Todas
+                        each categoria in categorias
+                            option(value=categoria.id)= categoria.nombre
+                label.mr-2.mb-2(for="precio") Precio
+                
+                div.form-group.d-flex.small.mb-4
+                    input.form-control(type="text" name="precioMin" id="precioMin" placeholder= '$0' value= precioMin ? precioMin : '$0' onInput="formatearPrecio(this)" maxlength="9")
+                    span.mx-3 _
+                    input.form-control(type="text" name="precioMax" id="precioMax" placeholder= '$100.000' value= precioMax ? precioMax : '$100.000' oninput="formatearPrecio(this)" maxlength="9")
+
+                div.form-group.mb-4
+                    label.mb-2(for="stock") Nombre Producto
+                    input.form-control(type="text" name="nombre" id="nombre" placeholder="Ingresa Nombre de Producto" value= nombre ? nombre : '')
+
+                div.form-group.mb-4
+                    button.btn.btn-primary(type="submit" style="margin-left: 0;") Filtrar
+script.
+    function actualizarPrecio(valor) {
+        document.getElementById('valorPrecio').innerText = valor;
+    }
+
+    function actualizarValueInput(valor) {
+        document.getElementById('precioMin').value = '$' + valor;
+        document.getElementById('precioMax').value = '$' + valor;
+    }

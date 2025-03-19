@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import propiedadesRoutes from './routes/propiedadesRoutes.js'
 import productosRoutes from './routes/productosRoutes.js'
+import pedidosRoutes from './routes/pedidosRoutes.js'
 import verificarJWT from './middlewares/authMiddleware.js';
 import db from './config/db.js'
 import upload from './middlewares/uploadFilesMiddleware.js';
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 app.use('/auth' , usuarioRoutes)
 app.use('/productos' , productosRoutes)
 app.use('/' , propiedadesRoutes)
+app.use('/pedidos' , pedidosRoutes)
 
 
 //Definir un puerto y arrancar el proyecto

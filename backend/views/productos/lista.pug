@@ -15,11 +15,36 @@ block contenido
                                     div.d-flex.align-items-center(style="font-weight:bold; height:68px")
                                         p(class="p-2 mb-1" style="text-align: center;")= producto.nombre
                                     p(class="pb-3 mb-1" style="")= `$${producto.precio}`
-                                    button(type="button" style="font-size:13px; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; width: 100%; max-width: 200px;")
+                                    button.add-to-cart(data-id= producto.id type="button" style="font-size:13px; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; width: 100%; max-width: 200px;")
                                         i(class="fa-solid fa-cart-plus") Añadir al carro
         div(style="width:25%;")
 
     script.
         console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".add-to-cart").forEach(boton => {
+                boton.addEventListener("click", async function () {
+                    console.log("Botón agregar al carro presionado para el producto con ID:", this.getAttribute("data-id"));
+                    const productoId = this.getAttribute("data-id");
+                    console.log("Producto ID:", productoId);
+                    const respuesta = await fetch("/pedidos/agregar-al-carro", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
+                        },
+                        body: JSON.stringify({ productoId } , 1)
+                    });
+
+                    const resultado = await respuesta.json();
+                    if (resultado.success) {
+                        alert("Producto agregado al carrito");
+                    } else {
+                        alert("Error al agregar el producto");
+                    }
+                });
+            });
+        });
 
 

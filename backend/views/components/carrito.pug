@@ -1,0 +1,29 @@
+div.floating-icon(id="cartIcon") 🛒
+
+div.modal(id="cartModal")
+    div.modal-content
+        span.close-btn(id="closeModal") &times;
+        p Hola, soy el carrito de compras
+
+script.
+    // Obtener elementos
+    const cartIcon = document.getElementById("cartIcon");
+    const cartModal = document.getElementById("cartModal");
+    const closeModal = document.getElementById("closeModal");
+
+    // Abrir modal al hacer clic en el icono
+    cartIcon.addEventListener("click", () => {
+        cartModal.style.display = "flex";
+    });
+
+    // Cerrar modal al hacer clic en el botón de cierre
+    closeModal.addEventListener("click", () => {
+        cartModal.style.display = "none";
+    });
+
+    // Cerrar modal si se hace clic fuera del contenido
+    window.addEventListener("click", (event) => {
+        if (event.target === cartModal) {
+            cartModal.style.display = "none";
+        }
+    });

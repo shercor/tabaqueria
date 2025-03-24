@@ -19,6 +19,7 @@ import './models/MetodosPago.js'
 const app = express();
 
 //Habilitar lectura de datos de formularios para Express
+app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 
 // Middleware de subida de archivos

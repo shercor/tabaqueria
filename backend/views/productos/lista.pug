@@ -3,7 +3,7 @@ extends ../layout/index
 block contenido
     div.py-5.d-flex(id="contenedor-productos" style="width:100%;")
         include ../components/filtro-productos      
-        div.container(style="width:50%;")
+        div.container()
             h1(class="d-flex justify-content-center")= pagina
             .mt-5.mx-auto(style="max-width:1400px;")
                 div.bg-white.py-3.px-4.shadow.row
@@ -34,7 +34,8 @@ block contenido
                             "Content-Type": "application/json",
                             "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
                         },
-                        body: JSON.stringify({ productoId } , 1)
+                        body: JSON.stringify({ productoId, cantidad: 1 }) // Asegura que se envíe una cantidad válida
+
                     });
 
                     const resultado = await respuesta.json();

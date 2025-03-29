@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import db from '../config/db.js';
-import Pedido from './Pedido.js';
-import Producto from './Producto.js';
+import Producto from './Producto.js'; // 👈 Importa Producto
 
 const DetallePedido = db.define('detalles_pedido', {
     cantidad: {
@@ -16,7 +15,7 @@ const DetallePedido = db.define('detalles_pedido', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Pedido,
+            model: 'pedidos',
             key: 'id',
         },
         onDelete: 'CASCADE',
@@ -25,26 +24,19 @@ const DetallePedido = db.define('detalles_pedido', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Producto,
+            model: 'productos',
             key: 'id',
         },
         onDelete: 'CASCADE',
     },
 }, {
     indexes: [
-        {
-            name: 'idx_pedido_id',
-            fields: ['pedido_id'],
-        },
-        {
-            name: 'idx_producto_id',
-            fields: ['producto_id'],
-        },
+        { name: 'idx_pedido_id', fields: ['pedido_id'] },
+        { name: 'idx_producto_id', fields: ['producto_id'] },
     ],
 });
 
-// Definir relaciones
-DetallePedido.belongsTo(Pedido, { foreignKey: 'pedido_id', onDelete: 'CASCADE' });
-DetallePedido.belongsTo(Producto, { foreignKey: 'producto_id', onDelete: 'CASCADE' });
+// 🔗 Asociación directa
+DetallePedido.belongsTo(Producto, { foreignKey: 'producto_id' });
 
 export default DetallePedido;

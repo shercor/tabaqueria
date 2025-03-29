@@ -65,6 +65,33 @@ class PedidosService {
             return { success: false, message: error.message };
         }
     }
+
+    async obtenerCarrito(userId) {
+        try {
+            const pedido = await Pedido.findOne({
+                where: { usuario_id: userId, estado: 'carrito' },
+                include: [
+                    {
+                        model: DetallePedido,
+                        as: 'detalles_pedido',
+                        include: [
+                            {
+                                model: Producto,
+                                attributes: ['id', 'nombre', 'precio', 'imagen'],
+                            }
+                        ]
+                    }
+                ]
+            });
+            if (!pedido) {
+                return { success: false, message: "No hay carrito para este usuario" };
+            }
+            return { success: true, pedido };
+        } catch (error) {
+            console.error("Error en obtenerCarrito:", error);
+            return { success: false, message: error.message };
+        }
+    }
 }
 
 export default new PedidosService();

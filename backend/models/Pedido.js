@@ -1,6 +1,7 @@
 import {DataTypes} from 'sequelize';
 import db from '../config/db.js';
 import Usuario from './Usuario.js';
+import DetallePedido from './DetallePedido.js';
 
 const Pedido = db.define('pedidos', {
     total: {
@@ -43,6 +44,9 @@ Pedido.belongsTo(Usuario, {
     foreignKey: 'usuario_id', // Clave foránea en la tabla `pedidos`
     onDelete: 'CASCADE', // Comportamiento al eliminar el usuario
 });
+
+// Relación con detalles_pedido
+Pedido.hasMany(DetallePedido, { foreignKey: 'pedido_id', as: 'detalles_pedido' });
 
 
 export default Pedido;

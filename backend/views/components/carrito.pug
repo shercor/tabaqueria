@@ -3,27 +3,154 @@ div.floating-icon(id="cartIcon") 🛒
 div.modal(id="cartModal")
     div.modal-content
         span.close-btn(id="closeModal") &times;
-        p Hola, soy el carrito de compras
+        h2 Carrito de Compras
+        ul#cartItems
+        h2 Total: $<span id="totalPrice">0</span> 
+        button#checkoutBtn Finalizar compra
+
 
 script.
-    // Obtener elementos
+    console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
+
+    // Obtener elementos del carrito
     const cartIcon = document.getElementById("cartIcon");
     const cartModal = document.getElementById("cartModal");
     const closeModal = document.getElementById("closeModal");
+    const cartItems = document.getElementById("cartItems");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    const totalPrice = document.getElementById("totalPrice");
 
-    // Abrir modal al hacer clic en el icono
+    async function actualizarCarrito() {
+        cartItems.innerHTML = "";
+
+        try {
+
+            // Se obtiene el carrito del backend
+            const respuesta = await fetch("/pedidos/obtener-carrito", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                }
+            });
+            var carrito = await respuesta.json() ;
+            carrito = carrito.pedido.detalles_pedido;
+            let total = 0;
+
+            // Se iteran los productos del carrito
+            carrito.forEach((producto, index) => {
+                total += producto.precio * producto.cantidad;
+
+                const item = document.createElement("div");
+                item.className = "cart-item";
+
+                const totalPorProducto = producto.precio * producto.cantidad;
+
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center" style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;">
+                        <div class="d-flex align-items-center" style="gap: 10px;">
+                            <img src="${producto.producto.imagen ?? '/general/no-image.jpg'}" alt="${producto.producto.nombre}" style="width: 100px; height: 100%; object-fit: cover;">
+                            <div>
+                                <strong>${producto.producto.nombre}</strong><br>
+                                <span>$${producto.precio} x${producto.cantidad}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div><strong>Total:</strong> $${totalPorProducto.toLocaleString()}</div>
+                            <button class="remove-item-from-cart btn btn-sm btn-danger mt-2" data-id="${producto.id}" title="Eliminar del carrito">❌</button>
+                        </div>
+                    </div>
+                `;
+                cartItems.appendChild(item);
+
+            });
+            totalPrice.innerText = total.toLocaleString();
+
+            // Evento para eliminar productos del backend
+            document.querySelectorAll(".remove-item-from-cart").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    const productoId = e.target.dataset.id;
+
+                    await fetch("/carrito/eliminar", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                        },
+                        body: JSON.stringify({ productoId })
+                    });
+
+                    actualizarCarrito(); // refrescar
+                });
+            });
+
+        } catch (error) {
+            console.error("Error al cargar el carrito:", error);
+            cartItems.innerHTML = "<li>Error al cargar el carrito</li>";
+            // debuggear error
+            console.error("Error:", error);
+        }
+    }
+
+
+    // Evento para abrir el modal y actualizar contenido
     cartIcon.addEventListener("click", () => {
         cartModal.style.display = "flex";
+        actualizarCarrito();
     });
 
-    // Cerrar modal al hacer clic en el botón de cierre
+    // Evento para cerrar el modal
     closeModal.addEventListener("click", () => {
         cartModal.style.display = "none";
     });
 
-    // Cerrar modal si se hace clic fuera del contenido
+    // Cerrar modal si se hace clic fuera
     window.addEventListener("click", (event) => {
         if (event.target === cartModal) {
             cartModal.style.display = "none";
         }
     });
+
+    // Evento para añadir productos al carrito
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".add-to-cart").forEach(boton => {
+            boton.addEventListener("click", async function () {
+                const productoId = this.getAttribute("data-id");
+                const productoNombre = this.closest(".product-item").querySelector("p").innerText;
+                const productoPrecio = parseFloat(this.closest(".product-item").querySelector("p:nth-of-type(2)").innerText.replace("$", ""));
+
+                console.log(`Agregando al carrito: ${productoNombre} - $${productoPrecio}`);
+
+                // Verificar si ya está en el carrito
+                const existe = carrito.find(p => p.id === productoId);
+                if (existe) {
+                    existe.cantidad += 1;
+                } else {
+                    carrito.push({ id: productoId, nombre: productoNombre, precio: productoPrecio, cantidad: 1 });
+                }
+
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+                actualizarCarrito();
+
+                // Enviar al backend si es necesario
+                const respuesta = await fetch("/pedidos/agregar-al-carro", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "CSRF-Token": !{JSON.stringify(csrfToken)}
+                    },
+                    body: JSON.stringify({ productoId, cantidad: 1 })
+                });
+
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    alert("Producto agregado al carrito");
+                } else {
+                    alert("Error al agregar el producto");
+                }
+            });
+        });
+    });
+
+    // Cargar carrito al abrir la página
+    document.addEventListener("DOMContentLoaded", actualizarCarrito);

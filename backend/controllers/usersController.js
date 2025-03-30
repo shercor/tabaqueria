@@ -348,6 +348,14 @@ const showUserInfo = (req , res) => {
     }
 }
 
+// const obtenerUsuarioActual = (req, res) => {
+//     const usuario = req.usuario;
+//     if (!usuario) {
+//         return res.status(401).json({ error: 'No se ha iniciado sesión con ningún usuario' });
+//     }
+//     res.json(usuario);
+// }
+
 export {
     formularioLogin,
     autenticar,

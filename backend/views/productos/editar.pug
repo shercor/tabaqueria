@@ -1,0 +1,90 @@
+extends ../layout/index
+
+block contenido
+    div.py-5 
+        h1(class="d-flex justify-content-center") Editar producto
+        .mt-5.mx-auto(style="max-width:600px;")
+            div.bg-white.py-3.px-4.shadow
+                form(action=`/productos/editar/${producto.id}` method="POST" enctype="multipart/form-data")
+                    input(type="hidden" name="_csrf" value= csrfToken)
+                    input(type="hidden" name="estado" value= "1")
+                    
+                    div.mt-2
+                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="nombre") Nombre del Producto
+                        input(type="text" id="nombre" name="nombre" class="form-control" required value=producto.nombre)
+                    
+                    div.mt-2
+                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="descripcion") Descripción
+                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3" ) #{producto.descripcion}
+                    
+                    div.row
+                        div.mt-2.col-4
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="precio") Precio
+                            div.input-group
+                                span.input-group-text
+                                    i.fas.fa-dollar-sign
+                                input(type="number" id="precio" name="precio" class="form-control" required value=producto.precio)
+                        
+                        div.mt-2.col-2
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="stock") Stock
+                            input(type="number" id="stock" name="stock" class="form-control" required value=producto.stock)
+                    
+                        div.mt-2.col-6
+                            label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="categoria") Categoría
+                            select(id="categoria" name="categoria_id" class="form-control")
+                                option(value="") Selecciona una categoría
+                                each categoria in categorias
+                                    if categoria.id == producto.categoria_id
+                                        option(value=categoria.id, selected) #{categoria.nombre}
+                                    else 
+                                        option(value=categoria.id) #{categoria.nombre}
+                    
+                    div.mt-2
+                        label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="imagen") Imagen
+                        input(type="file" id="imagen" name="imagen" accept="image/*" class="form-control")
+                    p.mt-2.text-muted.text-center
+                        | Imagen actual:
+                        if producto.imagen
+                            a(href=producto.imagen, target="_blank") Ver imagen
+                        else 
+                            | No hay imagen disponible
+                            div.mt-2.text-center
+                                img(src= `${producto.imagen ? producto.imagen :'/general/no-image.jpg'}` , id="imgproducto" alt="Imagen del producto", class="img-fluid", style="max-width: 200px; max-height: 200px;")
+                    input(type="submit" value="Guardar Producto" class="btn btn-primary mt-3")
+
+    script.
+        console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
+        let image = document.getElementById("imagen");
+        img = document.getElementById("imgproducto");
+        // Actualizar la imagen al seleccionar un nuevo archivo
+        image.addEventListener("change", function() {
+            console.log("Imagen seleccionada:", this.files[0]);
+            let file = this.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.maxWidth = "200px";
+                    img.style.maxHeight = "200px";
+                    // reemplazar valor de imgproducto por el nuevo valor
+                    imgproducto.src = e.target.result; // Actualizar la imagen mostrada
+
+                    // Actualizar 
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        // Mostrar la imagen actual si existe
+        //- if (producto.imagen) {
+        //-     let img = document.createElement("img");
+        //-     img.src = producto.imagen;
+        //-     img.alt = "Imagen del producto";
+        //-     img.style.maxWidth = "200px";
+        //-     img.style.maxHeight = "200px";
+        //-     document.body.appendChild(img);
+        //- }
+        // Mostrar la imagen actual si existe
+
+
+

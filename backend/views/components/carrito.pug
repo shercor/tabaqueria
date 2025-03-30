@@ -45,14 +45,17 @@ script.
                 item.className = "cart-item";
 
                 const totalPorProducto = producto.precio * producto.cantidad;
-
+                console.log('Precio por producto:', producto.precio);
                 item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center" style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;">
+                    <div class="d-flex justify-content-between align-items-left" style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;">
                         <div class="d-flex align-items-center" style="gap: 10px;">
                             <img src="${producto.producto.imagen ?? '/general/no-image.jpg'}" alt="${producto.producto.nombre}" style="width: 100px; height: 100%; object-fit: cover;">
-                            <div>
+                            <div style="text-align: left;">
                                 <strong>${producto.producto.nombre}</strong><br>
-                                <span>$${producto.precio} x${producto.cantidad}</span>
+                                <div>
+                                    <strong> Precio Unidad:</strong> $${producto.precio.toLocaleString()}<br>
+                                    <strong> Cantidad:</strong> ${producto.cantidad}<br>
+                                </div>
                             </div>
                         </div>
                         <div class="text-end">

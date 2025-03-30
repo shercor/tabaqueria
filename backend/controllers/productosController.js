@@ -15,6 +15,59 @@ const crear = async (req, res) => {
     })
 }
 
+const editar = async (req, res) => {
+    const { id } = req.params;
+    const producto = await Producto.findByPk(id, {
+        include: {
+            model: Categoria,
+            attributes: ['id', 'nombre']
+        }
+    });
+
+    if (!producto) {
+        return res.status(404).send('Producto no encontrado');
+    }
+
+    const categorias = await Categoria.findAll();
+
+    res.render('productos/editar', {
+        pagina: `Editar ${producto.nombre}`,
+        barra: true,
+        csrfToken: req.csrfToken(),
+        producto,
+        categorias
+    });
+}
+
+const editarProducto = async (req, res) => {
+    console.log('El id del producto a editar es:', req.params.id);
+    const { id } = req.params;
+    const { nombre, descripcion, precio, stock, categoria_id, estado } = req.body;
+    const imagen = req.file ? `/uploads/${req.file.filename}` : null; 
+
+    try {
+        const producto = await Producto.findByPk(id);
+        if (!producto) {
+            return res.status(404).send('Producto no encontrado');
+        }
+
+        await producto.update({
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            categoria_id,
+            imagen,
+            estado: estado === '1'
+        });
+
+        res.redirect('/productos/lista');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al editar el producto');
+    }
+}
+
 const ingresarProducto = async (req, res) => {
     await check('nombre')
         .notEmpty().withMessage('El nombre del producto es obligatorio')
@@ -140,5 +193,7 @@ function formatearAEntero(valorFormateado) {
 export{
     crear,
     ingresarProducto,
-    listaProductos
+    listaProductos,
+    editar,
+    editarProducto
 }

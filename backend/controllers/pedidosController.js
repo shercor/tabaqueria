@@ -22,7 +22,6 @@ const obtenerCarrito = async (req, res) => {
     try {
         const usuarioId = req.usuario.id;
         const resultado = await PedidosService.obtenerCarrito(usuarioId);
-        console.log('El resultado es:', resultado.pedido.toJSON());
         return res.json(resultado);
     } catch (error) {
         console.error("Error en obtenerCarrito:", error);
@@ -30,8 +29,21 @@ const obtenerCarrito = async (req, res) => {
     }
 }
 
+const verCarrito = async (req, res) => {
+    // Función que mostrará el carrito de compras para finalizar el pedido
+    try {
+        const usuarioId = req.usuario.id;
+        const resultado = await PedidosService.obtenerCarrito(usuarioId);
+
+    } catch (error) {
+        console.error("Error en verCarrito:", error);
+        return res.status(500).json({ success: false, message: "Error interno del servidor" });
+    }
+}
+
 
 export {
     agregarAlCarro,
-    obtenerCarrito
+    obtenerCarrito,
+    verCarrito
 }

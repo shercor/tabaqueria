@@ -1,0 +1,34 @@
+extends ../layout/index
+
+block contenido
+    //- Contenido donde se mostrará el carrito de compras antes de finalizar compra
+    div.py-5.d-flex(id="contenedor-carrito" style="width:100%;")
+    div.container()
+        h1(class="d-flex justify-content-center")= pagina
+        .mt-5.mx-auto(style="max-width:1400px;")
+            div.bg-white.py-3.px-4.shadow.row
+                if carrito
+                    each producto in carrito.pedido.detalles_pedido
+                        div.d-flex.justify-content-between.align-items-left(style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;")
+                            div.d-flex.align-items-center(style="gap: 10px;")
+                                img(src=`${producto.producto.imagen ? producto.producto.imagen : '/general/no-image.jpg'}`, alt=producto.producto.nombre, style="width: 100px; height: 100%; object-fit: cover;")
+                                div(style="text-align: left;")
+                                    strong #{producto.producto.nombre}
+                                    br
+                                    div
+                                        strong Precio Unidad:
+                                        |  $#{producto.precio}
+                                        br
+                                        strong Cantidad:
+                                        |  #{producto.cantidad}
+                                        br
+                            div.text-end
+                                div
+                                    strong Total:
+                                    |  $#{totalPorProducto}
+                                button.remove-item-from-cart.btn.btn-sm.btn-danger.mt-2(data-id=producto.id title="Eliminar del carrito") ❌
+            div.d-flex-align-items-center.justify-content-center
+                a.btn.btn-primary(href="/pedidos/confirmar-pedido") Finalizar compra
+    div(style="width:25%;")
+
+

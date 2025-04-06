@@ -2,6 +2,7 @@ import Pedido from "../models/Pedido.js";
 import DetallePedido from "../models/DetallePedido.js";
 import Producto from "../models/Producto.js";
 import db from "../config/db.js";
+import { Op } from 'sequelize';
 
 class PedidosService {
     async agregarProducto(userId, productoId, cantidad) {
@@ -74,6 +75,11 @@ class PedidosService {
                     {
                         model: DetallePedido,
                         as: 'detalles_pedido',
+                        where: {
+                            cantidad: {
+                                [Op.ne]: 0 
+                            }
+                        },
                         include: [
                             {
                                 model: Producto,
@@ -92,6 +98,46 @@ class PedidosService {
             return { success: false, message: error.message };
         }
     }
+
+    async eliminarProducto(pedidoId, productoId) {
+        try {
+            console.log('El id del pedido es:', pedidoId);
+            console.log('El id del producto es:', productoId);
+            // const detalle = await DetallePedido.findOne({
+            //     where: { pedido_id: pedidoId, producto_id: productoId }
+            // });
+            const detalle = await DetallePedido.findOne({
+                where: {id: productoId }
+            });
+            if (!detalle) {
+                console.log("El producto no está en el carrito");
+                return { success: false, message: "El producto no está en el carrito" };
+            }
+
+            const pedido = await Pedido.findByPk(pedidoId);
+            if (!pedido) {
+                console.log("El pedido no existe");
+                return { success: false, message: "El pedido no existe" };
+            }
+
+            // Calcular el nuevo total
+            const nuevoTotal = parseFloat(pedido.total) - (detalle.precio * detalle.cantidad);
+            await pedido.update({ total: nuevoTotal });
+
+            // await detalle.destroy(); // Eliminar el detalle del pedido
+            // en lugar de eliminarlo, cambiar el valor de cantidad a 0
+            detalle.cantidad = 0;
+            await detalle.save();
+            console.log('Producto eliminado del pedido');
+
+            return { success: true, message: "Producto eliminado del carrito" };
+        }
+        catch (error) {
+            console.error("Error en eliminarDelCarro:", error);
+            return { success: false, message: error.message };
+        }
+    }
+
 }
 
 export default new PedidosService();

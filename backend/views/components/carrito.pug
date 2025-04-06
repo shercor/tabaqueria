@@ -6,7 +6,7 @@ div.modal(id="cartModal")
         h2 Carrito de Compras
         ul#cartItems
         h2 Total: $<span id="totalPrice">0</span> 
-        button#checkoutBtn Finalizar compra
+        a#checkoutBtn.btn.btn-primary(href="/pedidos/finalizar-pedido") Finalizar compra
 
 
 script.
@@ -19,6 +19,7 @@ script.
     const cartItems = document.getElementById("cartItems");
     const checkoutBtn = document.getElementById("checkoutBtn");
     const totalPrice = document.getElementById("totalPrice");
+    var pedidoId = '0';
 
     async function actualizarCarrito() {
         cartItems.innerHTML = "";
@@ -34,7 +35,10 @@ script.
                 }
             });
             var carrito = await respuesta.json() ;
+            pedidoId = carrito.pedido.id;
             carrito = carrito.pedido.detalles_pedido;
+            
+            console.log(`Pedido ID: ${pedidoId}`);
             let total = 0;
 
             // Se iteran los productos del carrito
@@ -73,14 +77,17 @@ script.
             document.querySelectorAll(".remove-item-from-cart").forEach(btn => {
                 btn.addEventListener("click", async (e) => {
                     const productoId = e.target.dataset.id;
-
-                    await fetch("/carrito/eliminar", {
+                    console.log(`Eliminando del carrito: ${productoId}`);
+                    console.log(`Pedido ID: ${pedidoId}`);
+                    // necesito el id del pedido
+                    await fetch("/pedidos/eliminar-del-carro", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                            //- "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                            "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
                         },
-                        body: JSON.stringify({ productoId })
+                        body: JSON.stringify({ productoId, pedidoId })
                     });
 
                     actualizarCarrito(); // refrescar
@@ -140,7 +147,7 @@ script.
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "CSRF-Token": !{JSON.stringify(csrfToken)}
+                        //"CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
                     },
                     body: JSON.stringify({ productoId, cantidad: 1 })
                 });

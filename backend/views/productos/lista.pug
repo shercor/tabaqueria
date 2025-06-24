@@ -16,7 +16,8 @@ block contenido
                                         p(class="p-2 mb-1" style="text-align: center;")= producto.nombre
                                     p(class="pb-3 mb-1" style="")= `$${producto.precio}`
                                     button.add-to-cart(data-id= producto.id type="button" style="font-size:13px; background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; width: 100%; max-width: 200px;")
-                                        i(class="fa-solid fa-cart-plus") Añadir al carro
+                                        i(class="fa-solid fa-cart-plus me-2")
+                                        span Añadir al carro
         div(style="width:25%;")
 
     script.
@@ -40,11 +41,34 @@ block contenido
 
                     const resultado = await respuesta.json();
                     if (resultado.success) {
-                        alert("Producto agregado al carrito");
+                        Swal.fire({
+                            title: '¡Producto añadido al carro!',
+                            //- text: "¡No podrás revertir esto!",
+                            icon: 'success',
+                            showCancelButton: false,
+                            timer: 2000,
+                            confirmButtonText: 'Ok',
+                            //- cancelButtonText: 'Cancelar'
+                        });
                     } else {
-                        alert("Error al agregar el producto");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al agregar el producto',
+                        });
                     }
                 });
+            });
+        });
+
+          document.getElementById("miBoton").addEventListener("click", function () {
+            Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
             });
         });
 

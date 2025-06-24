@@ -5,7 +5,7 @@ div.modal(id="cartModal")
         span.close-btn(id="closeModal") &times;
         h2 Carrito de Compras
         ul#cartItems
-        h2 Total: $<span id="totalPrice">0</span> 
+        h2(id="totalPriceContain") Total: $<span id="totalPrice">0</span> 
         a#checkoutBtn.btn.btn-primary(href="/pedidos/finalizar-pedido") Finalizar compra
 
 
@@ -19,6 +19,7 @@ script.
     const cartItems = document.getElementById("cartItems");
     const checkoutBtn = document.getElementById("checkoutBtn");
     const totalPrice = document.getElementById("totalPrice");
+    const totalPriceContain = document.getElementById("totalPriceContain");
     var pedidoId = '0';
 
     async function actualizarCarrito() {
@@ -35,6 +36,13 @@ script.
                 }
             });
             var carrito = await respuesta.json() ;
+            console.log("Carrito:", carrito.success);
+            //si carrito está vacío, se muestra un mensaje
+            if (carrito.success == false) {
+                cartItems.innerHTML = "<li>No has añadido ningún producto todavía</li>";
+                totalPriceContain.style.display = 'none';
+                return;
+            }
             pedidoId = carrito.pedido.id;
             carrito = carrito.pedido.detalles_pedido;
             
@@ -71,7 +79,6 @@ script.
                 cartItems.appendChild(item);
 
             });
-            totalPrice.innerText = total.toLocaleString();
 
             // Evento para eliminar productos del backend
             document.querySelectorAll(".remove-item-from-cart").forEach(btn => {
@@ -93,6 +100,7 @@ script.
                     actualizarCarrito(); // refrescar
                 });
             });
+            totalPrice.innerText = total.toLocaleString();
 
         } catch (error) {
             console.error("Error al cargar el carrito:", error);
@@ -101,6 +109,8 @@ script.
             console.error("Error:", error);
         }
     }
+
+
 
 
     // Evento para abrir el modal y actualizar contenido

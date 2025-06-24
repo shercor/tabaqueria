@@ -18,6 +18,40 @@ const agregarAlCarro = async (req, res) => {
     }
 };
 
+const quitarDelCarro = async (req, res) => {
+    console.log('Llegó a quitar del carro');
+    console.log(req.body);
+    try {
+        const { detalleProductoId, productoId, pedidoId, productoCantidad } = req.body;
+        const usuarioId = req.usuario.id;
+
+        if (!productoId || productoCantidad <= 0) {
+            console.log("Datos inválidos");
+            return res.status(400).json({ success: false, message: "Datos inválidos" });
+        }
+        console.log('Las variables están bien y son: ');
+        console.log('Usuario ID:', usuarioId);
+        console.log('Producto ID:', productoId);
+        console.log('Detalle Producto ID:', detalleProductoId);
+        console.log('Pedido ID:', pedidoId);
+        console.log('Cantidad del producto:', productoCantidad);
+        const resultado = await PedidosService.restarProducto(usuarioId, productoId, pedidoId, productoCantidad, detalleProductoId);
+
+        if (!resultado.success) {
+            console.log("Error al quitar producto del carrito:", resultado.message);
+            return res.status(400).json(resultado);
+        }
+
+        console.log("Producto quitado del carrito");
+        return res.json(resultado);
+
+    } catch (error) {
+        console.error("Error en quitarDelCarro:", error);
+        return res.status(500).json({ success: false, message: "Error interno del servidor" });
+    }
+};
+
+
 const obtenerCarrito = async (req, res) => {
     try {
         const usuarioId = req.usuario.id;
@@ -74,5 +108,6 @@ export {
     agregarAlCarro,
     eliminarDelCarro,
     obtenerCarrito,
-    verCarrito
+    verCarrito,
+    quitarDelCarro
 }

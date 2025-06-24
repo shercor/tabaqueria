@@ -67,6 +67,86 @@ class PedidosService {
         }
     }
 
+    async restarProducto(userId, productoId, pedidoId, cantidad, detalleProductoId) {
+        const transaction = await db.transaction(); // Iniciar transacción
+        console.log('Las variables son:');
+        console.log('Usuario ID:', userId);
+        console.log('Producto ID:', productoId);
+        console.log('Pedido ID:', pedidoId);
+        console.log('Cantidad a restar:', cantidad);
+        console.log('Detalle Producto ID:', detalleProductoId);
+        // return;
+        try {
+            // Validar que el producto existe
+            const producto = await Producto.findByPk(productoId);
+            if (!producto) {
+                console.log(producto);
+                console.log("El producto no existe");
+                throw new Error("El producto no existe");
+            }
+
+            // Buscar un pedido en estado "carrito" para el usuario
+            const pedido = await Pedido.findOne({
+                where: { usuario_id: userId, estado: 'carrito' },
+                transaction
+            });
+
+            if (!pedido) {
+                throw new Error("No tienes un carrito activo");
+            }
+
+            // Buscar el detalle del producto en el pedido
+            const detalle = await DetallePedido.findByPk(detalleProductoId);
+
+
+            if (!detalle) {
+                throw new Error("Este producto no está en el carrito");
+            }
+
+            // Calcular nueva cantidad
+            const nuevaCantidad = cantidad - 1;
+
+            console.log('La nueva cantidad es:', nuevaCantidad);
+            // return;
+
+            if (nuevaCantidad < 0 ) {
+                throw new Error("No puedes restar más productos de los que tienes en el carrito");
+            }
+
+            // if (nuevaCantidad === 0) {
+            //     // Si la cantidad llega a 0, eliminar el detalle del pedido
+            //     await detalle.destroy({ transaction });
+            // } else {
+            //     // Si aún queda cantidad, actualizarla
+            //     detalle.cantidad = nuevaCantidad;
+            //     await detalle.save({ transaction });
+            // }
+
+            detalle.cantidad = nuevaCantidad;
+            await detalle.save({ transaction });
+
+            // Recalcular el total del pedido
+            const detalles = await DetallePedido.findAll({
+                where: { pedido_id: pedido.id },
+                transaction
+            });
+
+            const nuevoTotal = detalles.reduce((total, item) => {
+                return total + (item.precio * item.cantidad);
+            }, 0);
+
+            await pedido.update({ total: nuevoTotal }, { transaction });
+
+            await transaction.commit();
+            return { success: true, message: "Producto restado del carrito", pedido };
+
+        } catch (error) {
+            await transaction.rollback();
+            console.error("Error en restarProducto:", error);
+            return { success: false, message: error.message };
+        }
+    }
+
     async obtenerCarrito(userId) {
         try {
             const pedido = await Pedido.findOne({

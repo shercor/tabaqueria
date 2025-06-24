@@ -66,7 +66,9 @@ script.
                                 <strong>${producto.producto.nombre}</strong><br>
                                 <div>
                                     <strong> Precio Unidad:</strong> $${producto.precio.toLocaleString()}<br>
-                                    <strong> Cantidad:</strong> ${producto.cantidad}<br>
+                                    <strong> Cantidad:</strong>${producto.cantidad}<br>
+                                    <button class="extract-item-from-cart btn btn-sm btn-secondary mt-2" data-id="${producto.id}" data-productoId="${producto.producto.id}" data-cantidad="${producto.cantidad}" title="Restar del carrito">-</button>
+                                    <button class="add-item-to-cart btn btn-sm btn-secondary mt-2" data-id="${producto.id}" data-productoId="${producto.producto.id}" title="Añadir al carrito">+</button>
                                 </div>
                             </div>
                         </div>
@@ -95,6 +97,59 @@ script.
                             "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
                         },
                         body: JSON.stringify({ productoId, pedidoId })
+                    });
+
+                    actualizarCarrito(); // refrescar
+                });
+            });
+
+            // Restar una unidad del producto del carrito
+            document.querySelectorAll(".extract-item-from-cart").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    console.log("Restando una unidad del producto del carrito");
+                    //- e.preventDefault();
+                    //- return;
+                    const detalleProductoId = e.target.dataset.id;
+                    const productoId = e.target.dataset.productoid;
+                    const productoCantidad = parseInt(e.target.dataset.cantidad, 10);
+                    var cantidad =
+                    console.log(`Restando del carrito: ${detalleProductoId}`);
+                    console.log(`Pedido ID: ${pedidoId}`);
+                    // necesito el id del pedido
+                    await fetch("/pedidos/quitar-del-carro", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            //- "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                            "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
+                        },
+                        body: JSON.stringify({ productoId, detalleProductoId, pedidoId , productoCantidad})
+                    });
+
+                    actualizarCarrito(); // refrescar
+                });
+            });
+
+            // Añadir una unidad del producto al carrito
+            document.querySelectorAll(".add-item-to-cart").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    console.log("Añadiendo una unidad del producto al carrito");
+                    //- e.preventDefault();
+                    //- return;
+                    //- const detalleProductoId = e.target.dataset.id;
+                    const productoId = e.target.dataset.productoid;
+                    //- console.log(`Añadiendo al carrito: ${detalleProductoId}`);
+                    //- console.log(`Pedido ID: ${pedidoId}`);
+                    // necesito el id del pedido
+                    await fetch("/pedidos/agregar-al-carro", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            //- "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
+                            "CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
+                        },
+                        //- body: JSON.stringify({ productoId, detalleProductoId, pedidoId })
+                        body: JSON.stringify({ productoId, cantidad: 1 })
                     });
 
                     actualizarCarrito(); // refrescar

@@ -1,4 +1,4 @@
- # proyecto-node
+ # Levantar proyecto local
 
 1 . Actualizar docker-compose.yml
     - Actualizar nombre de base de datos (Líneas 14 y 27)

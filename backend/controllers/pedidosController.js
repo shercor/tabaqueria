@@ -103,11 +103,44 @@ const eliminarDelCarro = async (req, res) => {
     }
 }
 
+const finalizar = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { delivery } = req.body;
+
+    if (!delivery) {
+      return res.status(400).json({
+        success: false,
+        message: 'El campo delivery es obligatorio'
+      });
+    }
+
+    const pedidoFinalizado = await PedidosService.cambiarEstado(id, 'pagado', delivery);
+
+    // Después se deben realizar servicios adicionales como el envío de correo electrónico, actualización de inventario y realizar el pago
+
+
+    return res.status(200).json({
+      success: true,
+      pedido: pedidoFinalizado,
+      message: 'Pedido finalizado correctamente'
+    });
+  } catch (error) {
+    console.error('Error al finalizar el pedido:', error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Error al finalizar el pedido'
+    });
+  }
+};
+
 
 export {
     agregarAlCarro,
     eliminarDelCarro,
     obtenerCarrito,
     verCarrito,
-    quitarDelCarro
+    quitarDelCarro,
+    finalizar
 }

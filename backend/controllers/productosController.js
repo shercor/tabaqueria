@@ -2,6 +2,7 @@ import {check, validationResult} from 'express-validator'
 import { Op } from 'sequelize';
 import Categoria from '../models/Categoria.js';
 import Producto from '../models/Producto.js';
+import PedidosService from "../services/PedidosService.js";
 
 const crear = async (req, res) => {
 
@@ -169,7 +170,17 @@ const listaProductos = async (req, res) => {
     productos = await Producto.findAll({where: condiciones});
     if (categoriaId){
         categoria = await Categoria.findOne({where: {id: categoriaId}})
-    } 
+    }
+
+    // const carrito = await obtenerCarrito(req, res);
+    const carrito = await PedidosService.obtenerCarrito(req.usuario.id);
+    if (carrito.success === false){
+        console.error('Error al obtener el carrito:', carrito.message);
+        return res.status(500).send('Error al obtener el carrito');
+    }
+    console.log('Carrito obtenido:', carrito.pedido.detalles_pedido);
+    console.log('Productos obtenidos:', productos);
+
 
     res.render( 'productos/lista', {
         pagina: categoriaId ? categoria.nombre : 'Todos los productos',

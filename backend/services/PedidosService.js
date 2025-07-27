@@ -218,6 +218,107 @@ class PedidosService {
         }
     }
 
+    async actualizarEstado(pedidoId, nuevoEstado) {
+
+        // Buscar el pedido con sus detalles (si son necesarios para validar)
+        const pedido = await Pedido.findByPk(pedidoId, {
+            include: {
+                model: DetallePedido,
+                as: 'detalles_pedido',
+            }
+        });
+
+        
+
+         if (!pedido) {
+            throw new Error('Pedido no encontrado');
+        }
+
+        const transicionesValidas = {
+            carrito: ['pagado', 'cancelado'],
+            pagado: ['enviado', 'cancelado'],
+            enviado: ['entregado'],
+            entregado: [],
+            cancelado: [],
+        };
+
+        if (!transicionesValidas[pedido.estado].includes(nuevoEstado)) {
+            throw new Error(`No se puede cambiar de ${pedido.estado} a ${nuevoEstado}`);
+        }
+
+        const transaction = await db.transaction();
+        try {
+            const pedido = await Pedido.findOne({
+                where: { usuario_id: userId, estado: 'carrito' },
+                include: [
+                    {
+                        model: DetallePedido,
+                        as: 'detalles_pedido',
+                    }
+                ],
+                transaction
+            });
+            if (!pedido) {
+                return { success: false, message: "No hay carrito para este usuario" };
+            }
+
+            // Cambiar el estado del pedido a 'finalizado'
+            await pedido.update({ estado: 'finalizado' }, { transaction });
+
+            await transaction.commit();
+            return { success: true, message: "Pedido finalizado", pedido };
+        } catch (error) {
+            await transaction.rollback();
+            console.error("Error en finalizarPedido:", error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    async cambiarEstado(id, nuevoEstado, delivery) {
+        const transaction = await db.transaction();
+        try {
+            // Buscar el pedido por ID
+            const pedido = await Pedido.findByPk(id, { transaction, lock: true });
+            if (!pedido) {
+                throw new Error('Pedido no encontrado');
+            }
+
+            // Se valida que el nuevo estado sea uno de los estados válidos
+            const estadosValidos = ['carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'];
+            if (!estadosValidos.includes(nuevoEstado)) {
+                throw new Error('El estado al que se quiere cambiar no es válido');
+            }
+
+            // Se valida si la transición es válida
+            const transicionesValidas = {
+                carrito: ['pagado', 'eliminado'],
+                pagado: ['enviado', 'cancelado'],
+                enviado: ['entregado', 'cancelado'],
+                entregado: [],
+                cancelado: [],
+                eliminado: [],
+            };
+
+            if (!transicionesValidas[pedido.estado].includes(nuevoEstado)) {
+                throw new Error(`No se puede cambiar de ${pedido.estado} a ${nuevoEstado}`);
+            }
+
+            // Actualizar el estado del pedido
+            pedido.estado = nuevoEstado;
+            if (delivery !== undefined) {
+                pedido.delivery = delivery; // Actualizar el campo delivery si se proporciona
+            }
+            
+            await pedido.save({ transaction });
+
+            await transaction.commit();
+            return pedido;
+        } catch (error) {
+            await transaction.rollback();
+            console.error("Error al cambiar el estado del pedido:", error);
+            throw error;
+        }
+    }
 }
 
 export default new PedidosService();

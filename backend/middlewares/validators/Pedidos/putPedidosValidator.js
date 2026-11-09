@@ -1,5 +1,5 @@
-// middlewares/validators/putPedidosValidator.js
 import { param, body } from 'express-validator';
+import { ESTADOS_PEDIDO } from '../../../models/Pedido.js';
 
 const putPedidosValidator = [
   param('id')
@@ -9,7 +9,7 @@ const putPedidosValidator = [
   body('estado')
     .notEmpty()
     .withMessage('El estado es obligatorio')
-    .isIn(['pendiente', 'en_proceso', 'entregado', 'cancelado'])
+    .isIn(ESTADOS_PEDIDO)
     .withMessage('El estado no es válido'),
 
   body('observaciones')

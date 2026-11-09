@@ -10,7 +10,7 @@ const db = new Sequelize(
     process.env.BD_PASSWORD, // Password de la db
     {
         host: process.env.BD_HOST,
-        port: 3306,
+        port: process.env.BD_PORT ?? 3306,
         dialect: 'mysql',
         define: {
             timestamps: true // Agrega las columnas de creado y actualizado a las nuevas tablas

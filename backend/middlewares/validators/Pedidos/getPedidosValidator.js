@@ -1,13 +1,11 @@
-// middlewares/validaciones/getPedidosValidator.js
 import { query } from 'express-validator';
-
-const estadosValidos = ['carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'];
+import { ESTADOS_PEDIDO } from '../../../models/Pedido.js';
 
 const getPedidosValidator = [
     query('estado')
         .optional()
-        .isIn(estadosValidos)
-        .withMessage(`El estado debe ser uno de: ${estadosValidos.join(', ')}`),
+        .isIn(ESTADOS_PEDIDO)
+        .withMessage(`El estado debe ser uno de: ${ESTADOS_PEDIDO.join(', ')}`),
 
     query('usuario_id')
         .optional()

@@ -3,10 +3,11 @@ extends ../layout/index
 block contenido
     div.py-5 
         h1(class="d-flex justify-content-center") Editar producto
+        include ../components/errores
         .mt-5.mx-auto(style="max-width:600px;")
             div.bg-white.py-3.px-4.shadow
-                form(action=`/productos/editar/${producto.id}` method="POST" enctype="multipart/form-data")
-                    input(type="hidden" name="_csrf" value= csrfToken)
+                //- En formularios con archivos el token CSRF va en la URL: el body se lee recién después del chequeo CSRF
+                form(action=`/productos/editar/${producto.id}?_csrf=${csrfToken}` method="POST" enctype="multipart/form-data")
                     input(type="hidden" name="estado" value= "1")
                     
                     div.mt-2
@@ -15,7 +16,7 @@ block contenido
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="descripcion") Descripción
-                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3" ) #{producto.descripcion}
+                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3")= producto.descripcion
                     
                     div.row
                         div.mt-2.col-4
@@ -23,68 +24,41 @@ block contenido
                             div.input-group
                                 span.input-group-text
                                     i.fas.fa-dollar-sign
-                                input(type="number" id="precio" name="precio" class="form-control" required value=producto.precio)
+                                input(type="number" id="precio" name="precio" min="100" class="form-control" required value=producto.precio)
                         
                         div.mt-2.col-2
                             label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="stock") Stock
-                            input(type="number" id="stock" name="stock" class="form-control" required value=producto.stock)
+                            input(type="number" id="stock" name="stock" min="0" class="form-control" required value=producto.stock)
                     
                         div.mt-2.col-6
                             label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="categoria") Categoría
                             select(id="categoria" name="categoria_id" class="form-control")
                                 option(value="") Selecciona una categoría
                                 each categoria in categorias
-                                    if categoria.id == producto.categoria_id
-                                        option(value=categoria.id, selected) #{categoria.nombre}
-                                    else 
-                                        option(value=categoria.id) #{categoria.nombre}
+                                    option(value=categoria.id selected= categoria.id == producto.categoria_id) #{categoria.nombre}
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="imagen") Imagen
-                        input(type="file" id="imagen" name="imagen" accept="image/*" class="form-control")
+                        input(type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp,image/gif" class="form-control")
                     p.mt-2.text-muted.text-center
-                        | Imagen actual:
                         if producto.imagen
-                            a(href=producto.imagen, target="_blank") Ver imagen
-                        else 
+                            | Imagen actual (se mantiene si no subes otra)
+                        else
                             | No hay imagen disponible
-                            div.mt-2.text-center
-                                img(src= `${producto.imagen ? producto.imagen :'/general/no-image.jpg'}` , id="imgproducto" alt="Imagen del producto", class="img-fluid", style="max-width: 200px; max-height: 200px;")
+                    div.mt-2.text-center
+                        img(src=producto.imagen || '/general/no-image.jpg', id="imgproducto" alt="Imagen del producto", class="img-fluid", style="max-width: 200px; max-height: 200px;")
                     input(type="submit" value="Guardar Producto" class="btn btn-primary mt-3")
 
     script.
-        console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
-        let image = document.getElementById("imagen");
-        img = document.getElementById("imgproducto");
-        // Actualizar la imagen al seleccionar un nuevo archivo
-        image.addEventListener("change", function() {
-            console.log("Imagen seleccionada:", this.files[0]);
-            let file = this.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.style.maxWidth = "200px";
-                    img.style.maxHeight = "200px";
-                    // reemplazar valor de imgproducto por el nuevo valor
-                    imgproducto.src = e.target.result; // Actualizar la imagen mostrada
+        // Previsualiza la imagen elegida antes de guardar
+        const inputImagen = document.getElementById("imagen");
+        const imgProducto = document.getElementById("imgproducto");
 
-                    // Actualizar 
-                }
-                reader.readAsDataURL(file);
-            }
+        inputImagen.addEventListener("change", function () {
+            const archivo = this.files[0];
+            if (!archivo) return;
+
+            const lector = new FileReader();
+            lector.onload = evento => { imgProducto.src = evento.target.result; };
+            lector.readAsDataURL(archivo);
         });
-        // Mostrar la imagen actual si existe
-        //- if (producto.imagen) {
-        //-     let img = document.createElement("img");
-        //-     img.src = producto.imagen;
-        //-     img.alt = "Imagen del producto";
-        //-     img.style.maxWidth = "200px";
-        //-     img.style.maxHeight = "200px";
-        //-     document.body.appendChild(img);
-        //- }
-        // Mostrar la imagen actual si existe
-
-
-

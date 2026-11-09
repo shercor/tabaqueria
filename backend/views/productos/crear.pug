@@ -3,19 +3,20 @@ extends ../layout/index
 block contenido
     div.py-5 
         h1(class="d-flex justify-content-center") Crear Producto
+        include ../components/errores
         .mt-5.mx-auto(style="max-width:600px;")
             div.bg-white.py-3.px-4.shadow
-                form(action="/productos/crear" method="POST" enctype="multipart/form-data")
-                    input(type="hidden" name="_csrf" value= csrfToken)
+                //- En formularios con archivos el token CSRF va en la URL: el body se lee recién después del chequeo CSRF
+                form(action=`/productos/crear?_csrf=${csrfToken}` method="POST" enctype="multipart/form-data")
                     input(type="hidden" name="estado" value= "1")
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="nombre") Nombre del Producto
-                        input(type="text" id="nombre" name="nombre" class="form-control" required)
+                        input(type="text" id="nombre" name="nombre" class="form-control" required value=producto.nombre)
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="descripcion") Descripción
-                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3")
+                        textarea(id="descripcion" name="descripcion" class="form-control" rows="3")= producto.descripcion
                     
                     div.row
                         div.mt-2.col-4
@@ -23,26 +24,21 @@ block contenido
                             div.input-group
                                 span.input-group-text
                                     i.fas.fa-dollar-sign
-                                input(type="number" id="precio" name="precio" class="form-control" required)
+                                input(type="number" id="precio" name="precio" min="100" class="form-control" required value=producto.precio)
                         
                         div.mt-2.col-2
                             label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="stock") Stock
-                            input(type="number" id="stock" name="stock" class="form-control" required)
+                            input(type="number" id="stock" name="stock" min="0" class="form-control" required value=producto.stock)
                     
                         div.mt-2.col-6
                             label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="categoria") Categoría
                             select(id="categoria" name="categoria_id" class="form-control")
                                 option(value="") Selecciona una categoría
                                 each categoria in categorias
-                                    option(value=categoria.id) #{categoria.nombre}
+                                    option(value=categoria.id selected= categoria.id == producto.categoria_id) #{categoria.nombre}
                     
                     div.mt-2
                         label(class="form-label text-uppercase text-muted mb-2 fw-bold" for="imagen") Imagen
-                        input(type="file" id="imagen" name="imagen" accept="image/*" class="form-control")
+                        input(type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp,image/gif" class="form-control")
                     
                     input(type="submit" value="Guardar Producto" class="btn btn-primary mt-3")
-
-    script.
-        console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
-
-

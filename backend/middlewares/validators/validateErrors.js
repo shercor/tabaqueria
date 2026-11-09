@@ -1,13 +1,15 @@
 import { validationResult } from 'express-validator';
 
+// Corta la petición con 400 si alguno de los validators anteriores falló (para rutas JSON)
 const validarErrores = (req, res, next) => {
     const errores = validationResult(req);
 
     if (!errores.isEmpty()) {
-        return res.status(400).json({ errores: errores.array() });
+        const lista = errores.array();
+        return res.status(400).json({ success: false, message: lista[0].msg, errores: lista });
     }
 
-    next(); // si no hay errores, continúa con el siguiente middleware/controlador
+    next();
 };
 
 export default validarErrores;

@@ -5,7 +5,6 @@ header
                 nav(class="my-5 fs-6 fw-bold text-white align-items-center d-md-flex gap-md-3")
                     //- a(href="", class="text-decoration-none") Mis propiedades
                     a(href="", class="text-decoration-none") Mi perfil
-                    form(action="auth/logout", method="POST", style="display:inline-block")
+                    form(action="/auth/logout", method="POST", style="display:inline-block")
                         input(type="hidden" name="_csrf" value= csrfToken)
-                        input(type="hidden", name="_method", value="POST")
                         button(type="submit", class="text-white bg-secondary p-2 rounded-3 text-decoration-none") Cerrar sesión

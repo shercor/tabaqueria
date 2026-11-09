@@ -1,31 +1,38 @@
 import jwt from 'jsonwebtoken';
+import { esPeticionJSON } from '../helpers/http.js';
 
-const verificarJWT = (req, res, next, isTest) => {
-
-    // Obtención de Token
+// Devuelve el payload del JWT de la cookie, o null si no hay sesión válida
+const leerUsuario = req => {
     const token = req.cookies._token;
-
-    // Valida únicamente si nos encontramos en la vista de prueba de usuario
-    if (isTest){
-        if (token){
-            req.usuario = jwt.verify(token, process.env.JWT_SECRET);
-        } 
-        return next()
-    }
-
-    // Si no viene un Token, no se ha iniciado sesión aún
-    if (!token) {
-        return res.status(401).redirect('/auth/login'); // Si no existe token, 
-    }
-
-    // Si viene Token, hacer verificación de Token
+    if (!token) return null;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Se valida la firma del JWT con los datos del Payload y del Header, JWT_SECRET
-        req.usuario = decoded; // Guarda la info del usuario en req
-        return next();
-    } catch (error) {
-        return res.status(403).redirect('/auth/login'); // Token inválido
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+        return null;
     }
 };
 
+// Exige sesión: las vistas redirigen al login y las peticiones JSON reciben 401
+const verificarJWT = (req, res, next) => {
+    const usuario = leerUsuario(req);
+
+    if (!usuario) {
+        if (esPeticionJSON(req)) {
+            return res.status(401).json({ success: false, message: 'Debes iniciar sesión' });
+        }
+        return res.redirect('/auth/login');
+    }
+
+    req.usuario = usuario;
+    res.locals.usuario = usuario;
+    return next();
+};
+
+// Carga el usuario si hay sesión, pero deja pasar igual
+const usuarioOpcional = (req, res, next) => {
+    req.usuario = leerUsuario(req);
+    next();
+};
+
+export { usuarioOpcional };
 export default verificarJWT;

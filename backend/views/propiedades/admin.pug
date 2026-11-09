@@ -1,11 +1,9 @@
 extends ../layout/index
 
 block contenido
-    div.py-5 
-        h1(class="d-flex justify-content-center") Pagina Principal
-        //- div(class="d-flex justify-content-center" style="font-size: 30px;")= pagina
-        div(class="d-flex justify-content-center" style="font-size: 30px;") Mis elementos
+    div.py-5.text-center
+        h1.mb-4 Página Principal
 
-
-        //- a(href="/propiedades/crear" class="text-decoration-none py-2 px-2 bg-secondary rounded-2 text-white fw-bold text-uppercase" target="_blank") Publicar Propiedades
-        a(href="/propiedades/crear" class="text-decoration-none py-2 px-2 bg-secondary rounded-2 text-white fw-bold text-uppercase" target="_blank") Botón Random
+        div.d-flex.justify-content-center.gap-3
+            a(href="/productos/lista" class="text-decoration-none py-2 px-3 bg-secondary rounded-2 text-white fw-bold text-uppercase") Ver productos
+            a(href="/productos/crear" class="text-decoration-none py-2 px-3 bg-secondary rounded-2 text-white fw-bold text-uppercase") Crear producto

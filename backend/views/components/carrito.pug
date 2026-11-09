@@ -5,14 +5,11 @@ div.modal(id="cartModal")
         span.close-btn(id="closeModal") &times;
         h2 Carrito de Compras
         ul#cartItems
-        h2(id="totalPriceContain") Total: $<span id="totalPrice">0</span> 
+        h2(id="totalPriceContain") Total: <span id="totalPrice">$0</span>
         a#checkoutBtn.btn.btn-primary(href="/pedidos/finalizar-pedido") Finalizar compra
 
 
 script.
-    console.log("CSRF Token en la vista:", !{JSON.stringify(csrfToken)});
-
-    // Obtener elementos del carrito
     const cartIcon = document.getElementById("cartIcon");
     const cartModal = document.getElementById("cartModal");
     const closeModal = document.getElementById("closeModal");
@@ -20,109 +17,78 @@ script.
     const checkoutBtn = document.getElementById("checkoutBtn");
     const totalPrice = document.getElementById("totalPrice");
     const totalPriceContain = document.getElementById("totalPriceContain");
-    var pedidoId = '0';
 
-
-    async function actualizarCarrito() {
-        cartItems.innerHTML = "";
-
-        try {
-
-            // Se obtiene el carrito del backend
-            const respuesta = await fetch("/pedidos/obtener-carrito", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content || ""
-                }
-            });
-            var carrito = await respuesta.json() ;
-            console.log("Carrito:", carrito.success);
-            //si carrito está vacío, se muestra un mensaje
-            if (carrito.success == false) {
-                cartItems.innerHTML = "<li>No has añadido ningún producto todavía</li>";
-                totalPriceContain.style.display = 'none';
-                return;
-            }
-            pedidoId = carrito.pedido.id;
-            carrito = carrito.pedido.detalles_pedido;
-            
-            console.log(`Pedido ID: ${pedidoId}`);
-            let total = 0;
-
-            // Se iteran los productos del carrito
-            carrito.forEach((producto, index) => {
-                total += producto.precio * producto.cantidad;
-
-                const item = document.createElement("div");
-                item.className = "cart-item";
-
-                const totalPorProducto = producto.precio * producto.cantidad;
-                console.log('Precio por producto:', producto.precio);
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-left" style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;">
-                        <div class="d-flex align-items-center" style="gap: 10px;">
-                            <img src="${producto.producto.imagen ?? '/general/no-image.jpg'}" alt="${producto.producto.nombre}" style="width: 100px; height: 100%; object-fit: cover;">
-                            <div style="text-align: left;">
-                                <strong>${producto.producto.nombre}</strong><br>
-                                <div>
-                                    <strong> Precio Unidad:</strong> $${producto.precio.toLocaleString()}<br>
-                                    <strong> Cantidad:</strong>${producto.cantidad}<br>
-                                    <button class="btn btn-sm btn-secondary mt-2" data-id="${producto.id}" data-productoId="${producto.producto.id}" data-cantidad="${producto.cantidad}" title="Restar del carrito" onclick="quitarDelCarro(event, ${pedidoId})">-</button>
-                                    <button class="btn btn-sm btn-secondary mt-2" data-id="${producto.id}" data-productoId="${producto.producto.id}" title="Añadir al carrito" onclick="agregarAlCarro(event)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div><strong>Total:</strong> $${totalPorProducto.toLocaleString()}</div>
-                            <button class="remove-item-from-cart btn btn-sm btn-danger mt-2" data-id="${producto.id}" title="Eliminar del carrito">❌</button>
-                        </div>
-                    </div>
-                `;
-                cartItems.appendChild(item);
-
-            });
-
-            // Evento para eliminar productos del backend
-            document.querySelectorAll(".remove-item-from-cart").forEach(btn => {
-                btn.addEventListener("click", async (e) => {
-                    const productoId = e.target.dataset.id;
-                    console.log(`Eliminando del carrito: ${productoId}`);
-                    console.log(`Pedido ID: ${pedidoId}`);
-                    // necesito el id del pedido
-                    await fetch("/pedidos/eliminar-del-carro", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "CSRF-Token": !{JSON.stringify(csrfToken)}
-                        },
-                        body: JSON.stringify({ productoId, pedidoId })
-                    });
-
-                    actualizarCarrito(); // refrescar
-                });
-            });
-            
-            totalPrice.innerText = total.toLocaleString();
-
-        } catch (error) {
-            console.error("Error al cargar el carrito:", error);
-            cartItems.innerHTML = "<li>Error al cargar el carrito</li>";
-            // debuggear error
-            console.error("Error:", error);
-        }
+    function mostrarCarritoVacio(mensaje) {
+        cartItems.innerHTML = `<li>${mensaje}</li>`;
+        totalPriceContain.style.display = 'none';
+        checkoutBtn.style.display = 'none';
     }
 
+    function htmlDetalle(detalle) {
+        const producto = detalle.producto;
+        const nombre = escaparHtml(producto.nombre);
+        return `
+            <div class="d-flex justify-content-between align-items-left" style="width: 100%; height: 120px; padding: 10px; border-bottom: 1px solid #b6bbbf;">
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <img src="${escaparHtml(producto.imagen ?? '/general/no-image.jpg')}" alt="${nombre}" style="width: 100px; height: 100%; object-fit: cover;">
+                    <div style="text-align: left;">
+                        <strong>${nombre}</strong><br>
+                        <div>
+                            <strong>Precio Unidad:</strong> ${formatearPesos(detalle.precio)}<br>
+                            <strong>Cantidad:</strong> ${detalle.cantidad}<br>
+                            <button type="button" class="btn btn-sm btn-secondary mt-2" data-accion="restar" data-detalle-id="${detalle.id}" title="Restar del carrito">-</button>
+                            <button type="button" class="btn btn-sm btn-secondary mt-2" data-accion="sumar" data-producto-id="${producto.id}" title="Añadir al carrito">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div><strong>Total:</strong> ${formatearPesos(detalle.precio * detalle.cantidad)}</div>
+                    <button type="button" class="btn btn-sm btn-danger mt-2" data-accion="eliminar" data-detalle-id="${detalle.id}" title="Eliminar del carrito">❌</button>
+                </div>
+            </div>
+        `;
+    }
 
+    async function actualizarCarrito() {
+        const resultado = await enviarJSON("/pedidos/obtener-carrito");
 
+        if (!resultado.success) {
+            return mostrarCarritoVacio("Error al cargar el carrito");
+        }
 
-    // Evento para abrir el modal y actualizar contenido
+        const detalles = resultado.pedido?.detalles_pedido ?? [];
+        if (detalles.length === 0) {
+            return mostrarCarritoVacio("No has añadido ningún producto todavía");
+        }
+
+        cartItems.innerHTML = detalles.map(htmlDetalle).join('');
+        totalPrice.innerText = formatearPesos(resultado.pedido.total);
+        totalPriceContain.style.display = '';
+        checkoutBtn.style.display = '';
+    }
+
+    // Un solo listener para los botones +, - y ❌ de todas las líneas
+    cartItems.addEventListener("click", async (event) => {
+        const boton = event.target.closest("button[data-accion]");
+        if (!boton) return;
+
+        const acciones = {
+            sumar: () => agregarAlCarro(boton.dataset.productoId),
+            restar: () => quitarDelCarro(boton.dataset.detalleId),
+            eliminar: () => eliminarDelCarro(boton.dataset.detalleId),
+        };
+
+        boton.disabled = true;
+        const resultado = await acciones[boton.dataset.accion]();
+        if (!resultado.success) mostrarError(resultado.message);
+        await actualizarCarrito();
+    });
+
     cartIcon.addEventListener("click", () => {
         cartModal.style.display = "flex";
         actualizarCarrito();
     });
 
-    // Evento para cerrar el modal
     closeModal.addEventListener("click", () => {
         cartModal.style.display = "none";
     });
@@ -133,47 +99,3 @@ script.
             cartModal.style.display = "none";
         }
     });
-
-    // Evento para añadir productos al carrito
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".add-to-cart").forEach(boton => {
-            boton.addEventListener("click", async function () {
-                const productoId = this.getAttribute("data-id");
-                const productoNombre = this.closest(".product-item").querySelector("p").innerText;
-                const productoPrecio = parseFloat(this.closest(".product-item").querySelector("p:nth-of-type(2)").innerText.replace("$", ""));
-
-                console.log(`Agregando al carrito: ${productoNombre} - $${productoPrecio}`);
-
-                // Verificar si ya está en el carrito
-                const existe = carrito.find(p => p.id === productoId);
-                if (existe) {
-                    existe.cantidad += 1;
-                } else {
-                    carrito.push({ id: productoId, nombre: productoNombre, precio: productoPrecio, cantidad: 1 });
-                }
-
-                localStorage.setItem("carrito", JSON.stringify(carrito));
-                actualizarCarrito();
-
-                // Enviar al backend si es necesario
-                const respuesta = await fetch("/pedidos/agregar-al-carro", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        //"CSRF-Token": !{JSON.stringify(csrfToken)} // Si usas CSRF en Express
-                    },
-                    body: JSON.stringify({ productoId, cantidad: 1 })
-                });
-
-                const resultado = await respuesta.json();
-                if (resultado.success) {
-                    alert("Producto agregado al carrito");
-                } else {
-                    alert("Error al agregar el producto");
-                }
-            });
-        });
-    });
-
-    // Cargar carrito al abrir la página
-    document.addEventListener("DOMContentLoaded", actualizarCarrito);

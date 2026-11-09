@@ -1,204 +1,126 @@
-import {check, validationResult} from 'express-validator'
+import { validationResult } from 'express-validator'
 import { Op } from 'sequelize';
 import Categoria from '../models/Categoria.js';
 import Producto from '../models/Producto.js';
-import PedidosService from "../services/PedidosService.js";
+import { ErrorNegocio } from '../helpers/http.js';
+
+// Campos del formulario que se guardan en el producto
+const datosDelFormulario = body => ({
+    nombre: body.nombre,
+    descripcion: body.descripcion,
+    precio: body.precio,
+    stock: body.stock,
+    categoria_id: body.categoria_id || null,
+    estado: body.estado === '1'
+});
 
 const crear = async (req, res) => {
-
-    const categorias = await Categoria.findAll();
-
     res.render('productos/crear', {
         pagina: 'Crear un producto',
         barra: true,
-        csrfToken: req.csrfToken(),
-        categorias
+        categorias: await Categoria.findAll(),
+        producto: {}
     })
 }
 
-const editar = async (req, res) => {
-    const { id } = req.params;
-    const producto = await Producto.findByPk(id, {
-        include: {
-            model: Categoria,
-            attributes: ['id', 'nombre']
-        }
-    });
+const ingresarProducto = async (req, res) => {
+    const resultado = validationResult(req);
 
-    if (!producto) {
-        return res.status(404).send('Producto no encontrado');
+    if (!resultado.isEmpty()) {
+        return res.status(400).render('productos/crear', {
+            pagina: 'Crear un producto',
+            barra: true,
+            categorias: await Categoria.findAll(),
+            errores: resultado.array(),
+            producto: req.body
+        });
     }
 
-    const categorias = await Categoria.findAll();
+    await Producto.create({
+        ...datosDelFormulario(req.body),
+        imagen: req.file ? `/uploads/${req.file.filename}` : null
+    });
+
+    res.redirect('/productos/crear');
+}
+
+const editar = async (req, res) => {
+    const producto = await Producto.findByPk(req.params.id);
+    if (!producto) throw new ErrorNegocio('Producto no encontrado', 404);
 
     res.render('productos/editar', {
         pagina: `Editar ${producto.nombre}`,
         barra: true,
-        csrfToken: req.csrfToken(),
-        producto,
-        categorias
+        categorias: await Categoria.findAll(),
+        producto
     });
 }
 
 const editarProducto = async (req, res) => {
-    console.log('El id del producto a editar es:', req.params.id);
-    const { id } = req.params;
-    const { nombre, descripcion, precio, stock, categoria_id, estado } = req.body;
-    const imagen = req.file ? `/uploads/${req.file.filename}` : null; 
+    const producto = await Producto.findByPk(req.params.id);
+    if (!producto) throw new ErrorNegocio('Producto no encontrado', 404);
 
-    try {
-        const producto = await Producto.findByPk(id);
-        if (!producto) {
-            return res.status(404).send('Producto no encontrado');
-        }
+    const resultado = validationResult(req);
 
-        await producto.update({
-            nombre,
-            descripcion,
-            precio,
-            stock,
-            categoria_id,
-            imagen,
-            estado: estado === '1'
+    if (!resultado.isEmpty()) {
+        return res.status(400).render('productos/editar', {
+            pagina: `Editar ${producto.nombre}`,
+            barra: true,
+            categorias: await Categoria.findAll(),
+            errores: resultado.array(),
+            producto: { ...producto.toJSON(), ...req.body, id: producto.id }
         });
-
-        res.redirect('/productos/lista');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al editar el producto');
     }
+
+    const datos = datosDelFormulario(req.body);
+    // Sin archivo nuevo se conserva la imagen actual
+    if (req.file) datos.imagen = `/uploads/${req.file.filename}`;
+
+    await producto.update(datos);
+    res.redirect('/productos/lista');
 }
 
-const ingresarProducto = async (req, res) => {
-    await check('nombre')
-        .notEmpty().withMessage('El nombre del producto es obligatorio')
-        .isLength({min:3}).withMessage('El nombre debe tener al menos 2 carácteres');
-    await check('precio')
-        .notEmpty().withMessage('El precio es obligatorio')
-        .isFloat({ gt: 99 }).withMessage("El precio debe tener un valor mínimo de 100$");
-
-    let resultado = validationResult(req);
-
-    try {
-        // Imprimir todo el cuerpo de la solicitud
-        console.log("Datos del formulario:", req.body);
-
-        // Imprimir el archivo subido (si existe)
-        if (req.file) {
-            console.log("Archivo subido:", req.file);
-        }
-
-        const { nombre, descripcion, precio, stock, categoria_id, estado } = req.body;
-        const imagen = req.file ? `/uploads/${req.file.filename}` : null; 
-
-        const producto = await Producto.create({
-            nombre,
-            descripcion,
-            precio,
-            stock,
-            categoria_id,
-            imagen,
-            estado: estado === '1'
-        });
-
-        res.redirect('/productos/crear');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al crear el producto');
-    }
-}
+// "$15.000" -> 15000; vacío o sin dígitos -> null
+const aEntero = valor => {
+    const digitos = String(valor ?? '').replace(/\D/g, '');
+    return digitos ? parseInt(digitos, 10) : null;
+};
 
 const listaProductos = async (req, res) => {
-    console.log(req.params);
-    const categoriaId = req.params.id ?? null;
-    const {nombre, precioMin, precioMax} = req.query
-    let productos = null;
-    let categoria = null;
-    console.log('AAAAAAAAAAAAAAAAAA');
-    // console.log(precioMax);
-    // console.log(formatearAEntero(precioMax));
-    console.log(req.query);
-
-    // Crear un objeto para las condiciones de la consulta
+    // La categoría llega por la ruta (/lista/3) o por el formulario de filtros (?categoria=3)
+    const categoriaId = req.params.id || req.query.categoria || null;
+    const { nombre, precioMin, precioMax } = req.query;
     const condiciones = {};
+    let categoria = null;
 
-    // Filtrar por categoría si existe
     if (categoriaId) {
-        condiciones.categoria_id = categoriaId;
-        categoria = await Categoria.findOne({ where: { id: categoriaId } });
+        categoria = await Categoria.findByPk(categoriaId);
+        if (!categoria) throw new ErrorNegocio('La categoría no existe', 404);
+        condiciones.categoria_id = categoria.id;
     }
 
-    if (nombre){
-        condiciones.nombre = {
-            [Op.like]: `%${nombre}%`
-        }
+    if (nombre) {
+        condiciones.nombre = { [Op.like]: `%${nombre}%` };
     }
 
-    // Filtrar por rango de precios si existen
-    if (precioMin !== undefined && precioMax !== undefined) {
-        const precioMinNum = parseFloat(formatearAEntero(precioMin));
-        const precioMaxNum = parseFloat(formatearAEntero(precioMax));
-
-        if (!isNaN(precioMinNum) && !isNaN(precioMaxNum)) {
-            condiciones.precio = {
-                [Op.between]: [precioMinNum, precioMaxNum],
-            };
-        } else {
-            console.error('precioMin o precioMax no son números válidos');
-        }
-    } else if (precioMin !== undefined) {
-        const precioMinNum = parseFloat(formatearAEntero(precioMin));
-        if (!isNaN(precioMinNum)) {
-            condiciones.precio = {
-                [Op.gte]: precioMinNum, // Mayor o igual que precioMin
-            };
-        } else {
-            console.error('precioMin no es un número válido');
-        }
-    } else if (precioMax !== undefined) {
-        const precioMaxNum = parseFloat(formatearAEntero(precioMax));
-        if (!isNaN(precioMaxNum)) {
-            condiciones.precio = {
-                [Op.lte]: precioMaxNum, // Menor o igual que precioMax
-            };
-        } else {
-            console.error('precioMax no es un número válido');
-        }
+    const minimo = aEntero(precioMin);
+    const maximo = aEntero(precioMax);
+    if (minimo !== null || maximo !== null) {
+        condiciones.precio = {};
+        if (minimo !== null) condiciones.precio[Op.gte] = minimo;
+        if (maximo !== null) condiciones.precio[Op.lte] = maximo;
     }
 
-    console.log(condiciones);
-    productos = await Producto.findAll({where: condiciones});
-    if (categoriaId){
-        categoria = await Categoria.findOne({where: {id: categoriaId}})
-    }
-
-    // const carrito = await obtenerCarrito(req, res);
-    const carrito = await PedidosService.obtenerCarrito(req.usuario.id);
-    if (carrito.success === false){
-        console.error('Error al obtener el carrito:', carrito.message);
-        return res.status(500).send('Error al obtener el carrito');
-    }
-    console.log('Carrito obtenido:', carrito.pedido.detalles_pedido);
-    console.log('Productos obtenidos:', productos);
-
-
-    res.render( 'productos/lista', {
-        pagina: categoriaId ? categoria.nombre : 'Todos los productos',
-        params: req.params,
-        nombre: nombre ? nombre : null,
-        precioMin: precioMin ? precioMin : '',
-        precioMax: precioMax ? precioMax : '',
+    res.render('productos/lista', {
+        pagina: categoria ? categoria.nombre : 'Todos los productos',
         barra: true,
         categorias: await Categoria.findAll(),
-        csrfToken: req.csrfToken(),
-        productos
+        categoriaId: categoria?.id ?? null,
+        nombre: nombre ?? '',
+        precioMin: precioMin ?? '',
+        precioMax: precioMax ?? '',
+        productos: await Producto.findAll({ where: condiciones })
     })
-}
-
-function formatearAEntero(valorFormateado) {
-    const valorSinFormato = valorFormateado.replace(/[^0-9]/g, '');
-    const valorEntero = parseInt(valorSinFormato, 10);
-    return valorEntero;
 }
 
 export{

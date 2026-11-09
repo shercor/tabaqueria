@@ -8,10 +8,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=secret
-      - DB_NAME=tabaqueria
+      - BD_HOST=db
+      - BD_PORT=3306
+      - BD_USER=root
+      - BD_PASSWORD=secret
+      - BD_NOMBRE=tabaqueria
     depends_on:
       - db
     volumes:

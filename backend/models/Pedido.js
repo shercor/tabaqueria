@@ -3,13 +3,15 @@ import db from '../config/db.js';
 import Usuario from './Usuario.js';
 import DetallePedido from './DetallePedido.js';
 
+const ESTADOS_PEDIDO = ['carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'];
+
 const Pedido = db.define('pedidos', {
     total: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     estado: {
-        type: DataTypes.ENUM('carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'),
+        type: DataTypes.ENUM(...ESTADOS_PEDIDO),
         allowNull: false,
         defaultValue: 'carrito',
     },
@@ -49,4 +51,5 @@ Pedido.belongsTo(Usuario, {
 Pedido.hasMany(DetallePedido, { foreignKey: 'pedido_id', as: 'detalles_pedido' });
 
 
+export { ESTADOS_PEDIDO };
 export default Pedido;

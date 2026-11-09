@@ -20,7 +20,9 @@ const Usuario = db.define('usuarios', {
 
 }, {
     hooks: {
-        beforeCreate: async function(usuario){
+        // Hashea al crear y cada vez que cambia el password; no vuelve a hashear un hash ya guardado
+        beforeSave: async function(usuario){
+            if (!usuario.changed('password')) return;
             const salt = await bcrypt.genSalt(10)
             usuario.password = await bcrypt.hash( usuario.password , salt);
         }

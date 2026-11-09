@@ -29,6 +29,7 @@ app.locals.formatearPesos = formatearPesos
 
 // Carpeta Pública: va antes del resto para que los archivos estáticos no pasen por sesión ni CSRF
 app.use(express.static('public'))
+app.use('/vendor/bootstrap', express.static('node_modules/bootstrap/dist'))
 
 // Lectura del body en JSON y de formularios URL-encoded.
 // Los formularios con archivos (multipart) los procesa multer solo en las rutas que suben imágenes

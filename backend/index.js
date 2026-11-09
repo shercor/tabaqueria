@@ -3,7 +3,6 @@ import 'dotenv/config';
 
 // Dependencias
 import express from 'express'; //Import con EMS, configurado en el package.json con type: module
-import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import db from './config/db.js'
 import './models/Categoria.js';
@@ -17,6 +16,7 @@ import productosRoutes from './routes/productosRoutes.js'
 import pedidosRoutes from './routes/pedidosRoutes.js'
 import verificarJWT from './middlewares/authMiddleware.js';
 import manejarErrores, { rutaNoEncontrada } from './middlewares/errorMiddleware.js';
+import { protegerCsrf, tokenEnVistas } from './middlewares/csrfMiddleware.js';
 import { formatearPesos } from './helpers/formato.js';
 
 //Crear la app
@@ -40,11 +40,8 @@ app.use(express.urlencoded({extended: true}))
 app.use( cookieParser())
 
 // Habilitar CSRF y dejar el token disponible en todas las vistas
-app.use(csrf({cookie: true}))
-app.use((req, res, next) => {
-    res.locals.csrfToken = req.csrfToken();
-    next();
-});
+app.use(protegerCsrf)
+app.use(tokenEnVistas)
 
 // Todo requiere sesión, salvo las rutas de autenticación
 app.use((req, res, next) => {
@@ -56,7 +53,7 @@ app.use((req, res, next) => {
 
 // Routing
 app.get('/api/auth/csrf-token', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+  res.json({ csrfToken: res.locals.csrfToken });
 });
 app.use('/auth' , usuarioRoutes)
 app.use('/productos' , productosRoutes)

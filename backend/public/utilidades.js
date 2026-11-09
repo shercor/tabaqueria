@@ -11,7 +11,7 @@ async function enviarJSON(url, metodo = 'GET', datos) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'CSRF-Token': obtenerCsrfToken()
+                'X-CSRF-Token': obtenerCsrfToken()
             },
             body: datos ? JSON.stringify(datos) : undefined
         });

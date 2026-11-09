@@ -11,21 +11,21 @@
   "author": "Sebastian Herrera",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "bootstrap": "^5.3.3",
+    "bcryptjs": "^3.0.3",
+    "bootstrap": "^5.3.8",
     "cookie-parser": "^1.4.7",
-    "csurf": "^1.2.2",
-    "dotenv": "^16.4.7",
-    "express": "^4.19.2",
-    "express-validator": "^7.2.1",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.11.5",
-    "nodemailer": "^6.9.16",
-    "pug": "^3.0.3",
-    "sequelize": "^6.37.5"
+    "csrf-csrf": "^4.1.0",
+    "dotenv": "^16.6.1",
+    "express": "^5.3.0",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0",
+    "mysql2": "^3.24.6",
+    "nodemailer": "^10.4.0",
+    "pug": "^3.0.4",
+    "sequelize": "^6.37.8"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.14"
   }
 }

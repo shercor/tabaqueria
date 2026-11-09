@@ -1,0 +1,53 @@
+//- Crear y editar producto. Variables: titulo, accion, producto, categorias, errores
+extends ../layouts/base
+include ../mixins/formulario
+
+block contenido
+    div.py-5
+        h1.text-center= titulo
+        div.tarjeta-formulario.tarjeta-formulario--ancha
+            include ../partials/errores
+            //- En formularios con archivos el token CSRF va en la URL: el body se lee recién después del chequeo CSRF
+            form(action=`${accion}?_csrf=${csrfToken}` method="POST" enctype="multipart/form-data")
+                input(type="hidden" name="estado" value="1")
+
+                +campo('nombre', 'Nombre del Producto', 'text', producto.nombre)(required)
+
+                div.mt-2
+                    label.form-label.etiqueta(for="descripcion") Descripción
+                    textarea.form-control#descripcion(name="descripcion" rows="3")= producto.descripcion
+
+                div.row
+                    div.col-4.mt-2
+                        label.form-label.etiqueta(for="precio") Precio
+                        div.input-group
+                            span.input-group-text
+                                i.fas.fa-dollar-sign
+                            input.form-control#precio(type="number" name="precio" min="100" required value=producto.precio)
+                    div.col-2.mt-2
+                        label.form-label.etiqueta(for="stock") Stock
+                        input.form-control#stock(type="number" name="stock" min="0" required value=producto.stock)
+                    div.col-6.mt-2
+                        label.form-label.etiqueta(for="categoria") Categoría
+                        select.form-select#categoria(name="categoria_id")
+                            option(value="") Selecciona una categoría
+                            each categoria in categorias
+                                option(value=categoria.id selected=categoria.id == producto.categoria_id)= categoria.nombre
+
+                div.mt-2
+                    label.form-label.etiqueta(for="imagen") Imagen
+                    input.form-control#imagen(type="file" name="imagen" accept="image/jpeg,image/png,image/webp,image/gif")
+
+                if producto.id
+                    p.mt-2.text-muted.text-center
+                        if producto.imagen
+                            | Imagen actual (se mantiene si no subes otra)
+                        else
+                            | No hay imagen disponible
+                    div.mt-2.text-center
+                        img.img-fluid.vista-previa-imagen#vista-previa(src=producto.imagen || '/general/no-image.jpg' alt="Imagen del producto")
+
+                button.btn.btn-primary.mt-3(type="submit") Guardar Producto
+
+block scripts
+    script(type="module" src="/js/formulario-producto.js")

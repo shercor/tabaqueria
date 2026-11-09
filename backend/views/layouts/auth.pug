@@ -1,0 +1,11 @@
+//- Páginas sin sesión con un formulario centrado (login, registro, recuperar password)
+extends base
+
+block contenido
+    div.py-5
+        h1.text-center= nombreTienda
+        div.subtitulo
+            block titulo
+        div.tarjeta-formulario
+            include ../partials/errores
+            block formulario

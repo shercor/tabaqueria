@@ -1,0 +1,43 @@
+//- Resumen del carrito antes de finalizar la compra
+extends ../layouts/base
+
+block contenido
+    div.container.contenedor-angosto.py-5
+        h1.text-center.mb-5= pagina
+
+        if detalles.length
+            div.bg-white.py-3.px-4.shadow
+                each detalle in detalles
+                    div.carrito-linea
+                        div.carrito-linea__producto
+                            img.carrito-linea__imagen(src=detalle.producto.imagen || '/general/no-image.jpg' alt=detalle.producto.nombre)
+                            div
+                                strong= detalle.producto.nombre
+                                div Precio unidad: #{formatearPesos(detalle.precio)}
+                                div Cantidad: #{detalle.cantidad}
+                        div.text-end
+                            div
+                                strong Total:
+                                |  #{formatearPesos(detalle.precio * detalle.cantidad)}
+                            button.btn.btn-sm.btn-danger.mt-2(type="button" data-eliminar=detalle.id title="Eliminar del carrito") ❌
+
+                div.d-flex.justify-content-end.pt-3
+                    h4 Total: #{formatearPesos(pedido.total)}
+
+            form#form-finalizar.bg-white.py-3.px-4.shadow.mt-4(data-pedido-id=pedido.id)
+                h5.mb-3 ¿Cómo quieres recibir tu pedido?
+                div.form-check
+                    input.form-check-input#retiro(type="radio" name="delivery" value="false" checked)
+                    label.form-check-label(for="retiro") Retiro en tienda
+                div.form-check
+                    input.form-check-input#delivery(type="radio" name="delivery" value="true")
+                    label.form-check-label(for="delivery") Despacho a domicilio
+                div.text-center.mt-3
+                    button.btn.btn-primary(type="submit") Finalizar compra
+        else
+            div.bg-white.py-4.px-4.shadow.text-center
+                p.mb-3 No tienes productos en el carrito.
+                a.btn.btn-primary(href="/productos/lista") Ver productos
+
+block scripts
+    script(type="module" src="/js/carrito.js")

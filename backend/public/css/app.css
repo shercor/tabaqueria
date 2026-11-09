@@ -1,0 +1,320 @@
+/* Estilos propios. Se carga después de Bootstrap, así que estas reglas tienen prioridad */
+
+:root {
+    --alto-control: 2.375rem; /* 38 px: inputs, selects y botones .btn comparten este alto */
+    --color-fondo: #f6f8fb;
+    --color-marca: rgb(13 64 75);
+    --color-acento: #33a2a2;
+    --color-borde-suave: #b6bbbf;
+    --sombra-suave: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Oswald', sans-serif;
+    background-color: var(--color-fondo);
+    min-height: 100vh;
+}
+
+.contenido {
+    width: 100%;
+    padding: 0 0.5rem;
+}
+
+/* Controles: mismo alto para que inputs, selects y botones alineen en una fila */
+.form-control,
+.form-select,
+.input-group-text,
+.btn:not(.btn-sm) {
+    height: var(--alto-control);
+}
+
+textarea.form-control {
+    height: auto;
+}
+
+.etiqueta {
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Encabezado y menú (páginas con sesión) --- */
+
+.barra-superior {
+    background-color: var(--color-marca);
+}
+
+.franja-superior {
+    background-color: black;
+    height: 10vh;
+}
+
+.menu-principal {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+    padding: 0 200px;
+    border: 1px solid black;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.menu-principal__enlace {
+    width: 200px;
+    line-height: 50px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.menu-principal__enlace:hover {
+    background-color: #938d8d;
+    color: black;
+}
+
+/* Secciones que todavía no existen */
+.menu-principal__enlace[aria-disabled='true'] {
+    color: var(--bs-secondary-color);
+    cursor: default;
+}
+
+.menu-principal__enlace[aria-disabled='true']:hover {
+    background-color: transparent;
+    color: var(--bs-secondary-color);
+}
+
+/* --- Tarjetas de formulario y mensajes --- */
+
+.subtitulo {
+    font-size: 30px;
+    text-align: center;
+}
+
+.tarjeta-formulario {
+    max-width: 500px;
+    margin: 3rem auto 0;
+    padding: 1rem 1.5rem;
+    background-color: white;
+    box-shadow: var(--bs-box-shadow);
+}
+
+.tarjeta-formulario--ancha {
+    max-width: 600px;
+}
+
+.vista-previa-imagen {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+/* --- Catálogo --- */
+
+.filtros {
+    width: 25%;
+    flex-shrink: 0;
+    padding: 95px 32px 0 48px;
+}
+
+.filtros__panel {
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: var(--sombra-suave);
+    overflow: hidden;
+}
+
+.filtros__encabezado {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    margin-bottom: 1.5rem;
+}
+
+.filtros__titulo {
+    margin: 0 1.5rem;
+    line-height: 50px;
+    font-weight: bold;
+    font-size: large;
+}
+
+.filtros__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 0 20px;
+    background-color: green;
+    color: white;
+}
+
+.fila-precios {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.fila-precios .form-control {
+    flex: 1;
+    min-width: 0;
+}
+
+.catalogo {
+    max-width: 1400px;
+    padding: 1.5rem;
+    background-color: white;
+    box-shadow: var(--bs-box-shadow);
+}
+
+/* Tantas columnas como quepan: las tarjetas no se aplastan al haber más productos */
+.catalogo__grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+
+.espaciador-lateral {
+    width: 25%;
+    flex-shrink: 0;
+}
+
+.producto-tarjeta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+    border: 1px solid #c1b8b8;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.producto-tarjeta:hover {
+    background-color: #f5f5f5;
+}
+
+.producto-tarjeta__imagen {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid var(--color-borde-suave);
+}
+
+.producto-tarjeta__nombre {
+    display: flex;
+    align-items: center;
+    min-height: 68px;
+    margin: 0;
+    padding: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+/* Botón al pie: alineado entre tarjetas aunque los nombres ocupen distintas líneas */
+.producto-tarjeta .boton-carrito {
+    margin-top: auto;
+}
+
+.boton-carrito {
+    width: 75%;
+    max-width: 200px;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-acento);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.boton-carrito:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* --- Carrito --- */
+
+.carrito-flotante {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #007bff;
+    box-shadow: var(--sombra-suave);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.carrito-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.carrito-modal--abierto {
+    display: flex;
+}
+
+.carrito-modal__contenido {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(1200px, 95vw);
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 8px;
+    background: white;
+    text-align: center;
+}
+
+.carrito-modal__cerrar {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Una línea del carrito: la usan el modal y la página de checkout */
+.carrito-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-borde-suave);
+    text-align: left;
+}
+
+.carrito-linea__producto {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.carrito-linea__imagen {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.contenedor-angosto {
+    max-width: 1000px;
+}

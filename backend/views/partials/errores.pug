@@ -1,0 +1,5 @@
+//- Errores de validación de un formulario: [{ msg }]
+if errores
+    div.alert.alert-danger.mb-3
+        each error in errores
+            p.mb-1.fw-bold= error.msg

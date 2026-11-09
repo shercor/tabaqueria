@@ -12,7 +12,11 @@ const productoValidator = [
 
     body('descripcion').optional().trim(),
 
-    body('precio').isInt({ min: 100 }).withMessage('El precio debe ser un número entero de al menos $100').bail().toInt(),
+    body('precio')
+        .isInt({ min: 100 })
+        .withMessage('El precio debe ser un número entero de al menos $100')
+        .bail()
+        .toInt(),
 
     body('stock')
         .isInt({ min: 0 })

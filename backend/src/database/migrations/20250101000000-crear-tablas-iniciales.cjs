@@ -5,7 +5,7 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         const existentes = (await queryInterface.showAllTables()).map((tabla) =>
-            typeof tabla === 'string' ? tabla : tabla.tableName
+            typeof tabla === 'string' ? tabla : tabla.tableName,
         );
 
         const crear = async (tabla, columnas, indices = []) => {
@@ -16,7 +16,12 @@ module.exports = {
             }
         };
 
-        const id = () => ({ type: Sequelize.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true });
+        const id = () => ({
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+        });
         const fechas = () => ({
             createdAt: { type: Sequelize.DATE, allowNull: false },
             updatedAt: { type: Sequelize.DATE, allowNull: false },
@@ -60,7 +65,7 @@ module.exports = {
                 estado: { type: Sequelize.BOOLEAN },
                 ...fechas(),
             },
-            [['idx_categoria_id', ['categoria_id']]]
+            [['idx_categoria_id', ['categoria_id']]],
         );
 
         await crear(
@@ -69,7 +74,14 @@ module.exports = {
                 id: id(),
                 total: { type: Sequelize.DECIMAL(10, 2), allowNull: false },
                 estado: {
-                    type: Sequelize.ENUM('carrito', 'pagado', 'enviado', 'entregado', 'cancelado', 'eliminado'),
+                    type: Sequelize.ENUM(
+                        'carrito',
+                        'pagado',
+                        'enviado',
+                        'entregado',
+                        'cancelado',
+                        'eliminado',
+                    ),
                     allowNull: false,
                     defaultValue: 'carrito',
                 },
@@ -79,7 +91,7 @@ module.exports = {
                 fecha_pedido: { type: Sequelize.DATE },
                 ...fechas(),
             },
-            [['idx_usuario_id', ['usuario_id']]]
+            [['idx_usuario_id', ['usuario_id']]],
         );
 
         await crear(
@@ -95,7 +107,7 @@ module.exports = {
             [
                 ['idx_pedido_id', ['pedido_id']],
                 ['idx_producto_id', ['producto_id']],
-            ]
+            ],
         );
 
         await crear('metodos_pago', {
@@ -107,7 +119,14 @@ module.exports = {
     },
 
     async down(queryInterface) {
-        for (const tabla of ['metodos_pago', 'detalles_pedidos', 'pedidos', 'productos', 'categorias', 'usuarios']) {
+        for (const tabla of [
+            'metodos_pago',
+            'detalles_pedidos',
+            'pedidos',
+            'productos',
+            'categorias',
+            'usuarios',
+        ]) {
             await queryInterface.dropTable(tabla);
         }
     },

@@ -28,7 +28,8 @@ export const agregarAlCarro = (productoId, cantidad = 1) =>
 
 export const quitarDelCarro = (detalleId) => enviarJSON('/pedidos/quitar-del-carro', 'POST', { detalleId });
 
-export const eliminarDelCarro = (detalleId) => enviarJSON('/pedidos/eliminar-del-carro', 'POST', { detalleId });
+export const eliminarDelCarro = (detalleId) =>
+    enviarJSON('/pedidos/eliminar-del-carro', 'POST', { detalleId });
 
 export const finalizarPedido = (pedidoId, delivery) =>
     enviarJSON(`/pedidos/finalizar/${pedidoId}`, 'PATCH', { delivery });

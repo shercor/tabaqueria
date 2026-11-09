@@ -16,7 +16,7 @@ const DetallePedido = db.define(
             { name: 'idx_pedido_id', fields: ['pedido_id'] },
             { name: 'idx_producto_id', fields: ['producto_id'] },
         ],
-    }
+    },
 );
 
 export default DetallePedido;

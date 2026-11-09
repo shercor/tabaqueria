@@ -11,6 +11,11 @@ document.querySelectorAll('.boton-carrito[data-producto-id]').forEach((boton) =>
         if (!resultado.success) {
             return mostrarError(resultado.message || 'Hubo un problema al agregar el producto');
         }
-        Swal.fire({ icon: 'success', title: '¡Producto añadido al carro!', timer: 2000, confirmButtonText: 'Ok' });
+        Swal.fire({
+            icon: 'success',
+            title: '¡Producto añadido al carro!',
+            timer: 2000,
+            confirmButtonText: 'Ok',
+        });
     });
 });

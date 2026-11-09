@@ -50,4 +50,11 @@ const cambiarPassword = async (token, password) => {
     return true;
 };
 
-export { iniciarSesion, registrar, confirmarCuenta, solicitarCambioPassword, tokenDePasswordValido, cambiarPassword };
+export {
+    iniciarSesion,
+    registrar,
+    confirmarCuenta,
+    solicitarCambioPassword,
+    tokenDePasswordValido,
+    cambiarPassword,
+};

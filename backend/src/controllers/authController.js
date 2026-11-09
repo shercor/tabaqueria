@@ -65,7 +65,9 @@ const confirmar = async (req, res) => {
     mensaje(res, {
         pagina: 'Confirmar cuenta',
         titulo: confirmada ? 'Usuario verificado' : 'Error al confirmar tu cuenta',
-        mensaje: confirmada ? 'La cuenta se ha podido verificar exitosamente' : 'Hubo un error al confirmar tu cuenta',
+        mensaje: confirmada
+            ? 'La cuenta se ha podido verificar exitosamente'
+            : 'Hubo un error al confirmar tu cuenta',
         error: !confirmada,
         enlace: confirmada ? enlaceLogin : undefined,
     });

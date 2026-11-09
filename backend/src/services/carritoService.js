@@ -71,8 +71,13 @@ const agregarProducto = (usuarioId, productoId, cantidad = 1) =>
             await detalle.update({ cantidad: nuevaCantidad, precio: producto.precio }, { transaction });
         } else {
             await DetallePedido.create(
-                { pedido_id: carrito.id, producto_id: productoId, cantidad: nuevaCantidad, precio: producto.precio },
-                { transaction }
+                {
+                    pedido_id: carrito.id,
+                    producto_id: productoId,
+                    cantidad: nuevaCantidad,
+                    precio: producto.precio,
+                },
+                { transaction },
             );
         }
 

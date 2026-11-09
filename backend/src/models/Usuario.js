@@ -20,7 +20,7 @@ const Usuario = db.define(
                 usuario.password = await bcrypt.hash(usuario.password, 10);
             },
         },
-    }
+    },
 );
 
 Usuario.prototype.verificarPassword = function (password) {

@@ -21,7 +21,7 @@ const Pedido = db.define(
     },
     {
         indexes: [{ name: 'idx_usuario_id', fields: ['usuario_id'] }],
-    }
+    },
 );
 
 export { ESTADOS_PEDIDO };

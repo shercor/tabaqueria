@@ -21,7 +21,11 @@ const validarTransicion = (estadoActual, nuevoEstado) => {
 // Cierra el carrito: valida y descuenta stock, y lo deja en estado 'pagado'
 const finalizar = (usuarioId, pedidoId, delivery) =>
     db.transaction(async (transaction) => {
-        const pedido = await Pedido.findOne({ where: { id: pedidoId, usuario_id: usuarioId }, transaction, lock: true });
+        const pedido = await Pedido.findOne({
+            where: { id: pedidoId, usuario_id: usuarioId },
+            transaction,
+            lock: true,
+        });
         if (!pedido) throw new ErrorNegocio('Pedido no encontrado', 404);
         validarTransicion(pedido.estado, 'pagado');
 
@@ -45,12 +49,16 @@ const finalizar = (usuarioId, pedidoId, delivery) =>
                 throw new ErrorNegocio('Uno de los productos de tu carrito ya no está disponible');
             }
             if (producto.stock < detalle.cantidad) {
-                throw new ErrorNegocio(`No hay stock suficiente de ${producto.nombre} (quedan ${producto.stock})`);
+                throw new ErrorNegocio(
+                    `No hay stock suficiente de ${producto.nombre} (quedan ${producto.stock})`,
+                );
             }
         }
 
         for (const detalle of detalles) {
-            await productosPorId.get(detalle.producto_id).decrement('stock', { by: detalle.cantidad, transaction });
+            await productosPorId
+                .get(detalle.producto_id)
+                .decrement('stock', { by: detalle.cantidad, transaction });
         }
 
         await recalcularTotal(pedido, transaction);

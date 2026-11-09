@@ -12,7 +12,7 @@ const MetodoPago = db.define(
     {
         tableName: 'metodos_pago',
         timestamps: false,
-    }
+    },
 );
 
 export default MetodoPago;

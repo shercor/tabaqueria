@@ -16,7 +16,7 @@ const Producto = db.define(
     },
     {
         indexes: [{ name: 'idx_categoria_id', fields: ['categoria_id'] }],
-    }
+    },
 );
 
 export default Producto;

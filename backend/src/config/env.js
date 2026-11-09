@@ -6,7 +6,9 @@ import { fileURLToPath } from 'url';
 
 const faltantes = ['BD_NOMBRE', 'BD_USER', 'JWT_SECRET'].filter((nombre) => !process.env[nombre]);
 if (faltantes.length > 0) {
-    throw new Error(`Faltan variables de entorno: ${faltantes.join(', ')}. Revisa backend/.env (plantilla en example.env)`);
+    throw new Error(
+        `Faltan variables de entorno: ${faltantes.join(', ')}. Revisa backend/.env (plantilla en example.env)`,
+    );
 }
 
 const raizBackend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -35,7 +37,8 @@ const env = {
     jwtSecret: process.env.JWT_SECRET,
     // Si no se define, se deriva del JWT_SECRET para no reutilizar la misma clave
     csrfSecret:
-        process.env.CSRF_SECRET ?? crypto.createHash('sha256').update(`csrf:${process.env.JWT_SECRET}`).digest('hex'),
+        process.env.CSRF_SECRET ??
+        crypto.createHash('sha256').update(`csrf:${process.env.JWT_SECRET}`).digest('hex'),
 
     email: {
         host: process.env.EMAIL_HOST,

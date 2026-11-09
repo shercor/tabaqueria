@@ -35,7 +35,11 @@ const editar = async (req, res) => {
     if (errores) {
         const producto = await productosService.buscar(req.params.id);
         // Se muestra lo que escribió el usuario sobre los datos guardados
-        return mostrarFormulario(res, { producto: { ...producto.toJSON(), ...req.body }, errores, status: 400 });
+        return mostrarFormulario(res, {
+            producto: { ...producto.toJSON(), ...req.body },
+            errores,
+            status: 400,
+        });
     }
 
     await productosService.actualizar(req.params.id, req.body, req.file);

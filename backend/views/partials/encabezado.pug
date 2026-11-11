@@ -1,0 +1,14 @@
+header.barra-superior.d-flex.justify-content-between.align-items-center.px-4
+    h1.text-white.mb-0.fs-3.py-3= nombreTienda
+    nav.my-5.fs-6.fw-bold.d-md-flex.align-items-center.gap-md-3
+        a.text-white-50.text-decoration-none(aria-disabled="true" title="Próximamente") Mi perfil
+        form(action="/auth/logout" method="POST")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            button.btn.btn-secondary(type="submit") Cerrar sesión
+
+nav.menu-principal
+    a.menu-principal__enlace(href="/index") Inicio
+    a.menu-principal__enlace(href="/productos/lista") Productos
+    //- Secciones pendientes: se ven en el menú pero aún no llevan a ninguna parte
+    each seccion in ['Sobre Nosotros', 'Ayuda', 'Contáctanos']
+        a.menu-principal__enlace(aria-disabled="true" title="Próximamente")= seccion

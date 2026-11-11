@@ -1,0 +1,5 @@
+//- Campo de texto con su etiqueta. Atributos extra: +campo(...)(placeholder="x" required)
+mixin campo(nombre, etiqueta, tipo = 'text', valor)
+    div.mt-2
+        label.form-label.etiqueta(for=nombre)= etiqueta
+        input.form-control(id=nombre name=nombre type=tipo value=valor)&attributes(attributes)

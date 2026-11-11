@@ -1,0 +1,28 @@
+//- La lógica de formato de precios está en public/js/productos.js
+aside.filtros
+    div.filtros__panel
+        div.filtros__encabezado
+            span.filtros__titulo Filtros
+            div.filtros__icono
+                i.fa-solid.fa-filter
+
+        form.px-4(action="/productos/lista" method="GET")
+            div.mb-4
+                label.form-label(for="filtro-categoria") Categoría
+                select.form-select#filtro-categoria(name="categoria")
+                    option(value="") Todas
+                    each categoria in categorias
+                        option(value=categoria.id selected=categoria.id == filtros.categoriaId)= categoria.nombre
+
+            label.form-label(for="filtro-precio-min") Precio
+            div.fila-precios.mb-4
+                input.form-control#filtro-precio-min(type="text" name="precioMin" placeholder="$0" value=filtros.precioMin data-formato="pesos" maxlength="9" inputmode="numeric")
+                span –
+                input.form-control#filtro-precio-max(type="text" name="precioMax" placeholder="$100.000" value=filtros.precioMax data-formato="pesos" maxlength="9" inputmode="numeric" aria-label="Precio máximo")
+
+            div.mb-4
+                label.form-label(for="filtro-nombre") Nombre Producto
+                input.form-control#filtro-nombre(type="text" name="nombre" placeholder="Ingresa Nombre de Producto" value=filtros.nombre)
+
+            div.mb-4
+                button.btn.btn-primary(type="submit") Filtrar

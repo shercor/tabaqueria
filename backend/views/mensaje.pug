@@ -1,0 +1,12 @@
+//- Mensaje de resultado o error: titulo, mensaje, error (bool) y enlace opcional { href, texto }
+extends layouts/base
+
+block contenido
+    div.py-5
+        h1.text-center= nombreTienda
+        div.subtitulo= titulo
+
+        div.tarjeta-formulario.bg-transparent.shadow-none
+            p.alert.fw-bold.text-center(class=error ? 'alert-danger' : 'alert-success')= mensaje
+            if enlace
+                a.d-block.text-center.fw-bold.fs-4(href=enlace.href)= enlace.texto

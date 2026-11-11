@@ -1,555 +1,320 @@
-*, ::before, ::after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
+/* Estilos propios. Se carga después de Bootstrap, así que estas reglas tienen prioridad */
+
+:root {
+    --alto-control: 2.375rem; /* 38 px: inputs, selects y botones .btn comparten este alto */
+    --color-fondo: #f6f8fb;
+    --color-marca: rgb(13 64 75);
+    --color-acento: #33a2a2;
+    --color-borde-suave: #b6bbbf;
+    --sombra-suave: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-::backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
-}/*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
-*//*
-1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
-2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
-*/
-
-*,
-::before,
-::after {
-  box-sizing: border-box; /* 1 */
-  border-width: 0; /* 2 */
-  border-style: solid; /* 2 */
-  border-color: #e5e7eb; /* 2 */
-}
-
-::before,
-::after {
-  --tw-content: '';
-}
-
-/*
-1. Use a consistent sensible line-height in all browsers.
-2. Prevent adjustments of font size after orientation changes in iOS.
-3. Use a more readable tab size.
-4. Use the user's configured `sans` font-family by default.
-5. Use the user's configured `sans` font-feature-settings by default.
-6. Use the user's configured `sans` font-variation-settings by default.
-7. Disable tap highlights on iOS
-*/
-
-html,
-:host {
-  line-height: 1.5; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-  -moz-tab-size: 4; /* 3 */
-  -o-tab-size: 4;
-     tab-size: 4; /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
-  font-feature-settings: normal; /* 5 */
-  font-variation-settings: normal; /* 6 */
-  -webkit-tap-highlight-color: transparent; /* 7 */
-}
-
-/*
-1. Remove the margin in all browsers.
-2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
-*/
 
 body {
-  margin: 0; /* 1 */
-  line-height: inherit; /* 2 */
+    font-family: 'Oswald', sans-serif;
+    background-color: var(--color-fondo);
+    min-height: 100vh;
 }
 
-/*
-1. Add the correct height in Firefox.
-2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
-3. Ensure horizontal rules are visible by default.
-*/
-
-hr {
-  height: 0; /* 1 */
-  color: inherit; /* 2 */
-  border-top-width: 1px; /* 3 */
+.contenido {
+    width: 100%;
+    padding: 0 0.5rem;
 }
 
-/*
-Add the correct text decoration in Chrome, Edge, and Safari.
-*/
-
-abbr:where([title]) {
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+/* Controles: mismo alto para que inputs, selects y botones alineen en una fila */
+.form-control,
+.form-select,
+.input-group-text,
+.btn:not(.btn-sm) {
+    height: var(--alto-control);
 }
 
-/*
-Remove the default font size and weight for headings.
-*/
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: inherit;
+textarea.form-control {
+    height: auto;
 }
 
-/*
-Reset links to optimize for opt-in styling instead of opt-out.
-*/
-
-a {
-  color: inherit;
-  text-decoration: inherit;
+.etiqueta {
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
-/*
-Add the correct font weight in Edge and Safari.
-*/
+/* --- Encabezado y menú (páginas con sesión) --- */
 
-b,
-strong {
-  font-weight: bolder;
+.barra-superior {
+    background-color: var(--color-marca);
 }
 
-/*
-1. Use the user's configured `mono` font-family by default.
-2. Use the user's configured `mono` font-feature-settings by default.
-3. Use the user's configured `mono` font-variation-settings by default.
-4. Correct the odd `em` font sizing in all browsers.
-*/
-
-code,
-kbd,
-samp,
-pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
-  font-feature-settings: normal; /* 2 */
-  font-variation-settings: normal; /* 3 */
-  font-size: 1em; /* 4 */
+.franja-superior {
+    background-color: black;
+    height: 10vh;
 }
 
-/*
-Add the correct font size in all browsers.
-*/
-
-small {
-  font-size: 80%;
+.menu-principal {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+    padding: 0 200px;
+    border: 1px solid black;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
-/*
-Prevent `sub` and `sup` elements from affecting the line height in all browsers.
-*/
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
+.menu-principal__enlace {
+    width: 200px;
+    line-height: 50px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
 }
 
-sub {
-  bottom: -0.25em;
+.menu-principal__enlace:hover {
+    background-color: #938d8d;
+    color: black;
 }
 
-sup {
-  top: -0.5em;
+/* Secciones que todavía no existen */
+.menu-principal__enlace[aria-disabled='true'] {
+    color: var(--bs-secondary-color);
+    cursor: default;
 }
 
-/*
-1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
-2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
-3. Remove gaps between table borders by default.
-*/
-
-table {
-  text-indent: 0; /* 1 */
-  border-color: inherit; /* 2 */
-  border-collapse: collapse; /* 3 */
+.menu-principal__enlace[aria-disabled='true']:hover {
+    background-color: transparent;
+    color: var(--bs-secondary-color);
 }
 
-/*
-1. Change the font styles in all browsers.
-2. Remove the margin in Firefox and Safari.
-3. Remove default padding in all browsers.
-*/
+/* --- Tarjetas de formulario y mensajes --- */
 
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit; /* 1 */
-  font-feature-settings: inherit; /* 1 */
-  font-variation-settings: inherit; /* 1 */
-  font-size: 100%; /* 1 */
-  font-weight: inherit; /* 1 */
-  line-height: inherit; /* 1 */
-  letter-spacing: inherit; /* 1 */
-  color: inherit; /* 1 */
-  margin: 0; /* 2 */
-  padding: 0; /* 3 */
+.subtitulo {
+    font-size: 30px;
+    text-align: center;
 }
 
-/*
-Remove the inheritance of text transform in Edge and Firefox.
-*/
-
-button,
-select {
-  text-transform: none;
+.tarjeta-formulario {
+    max-width: 500px;
+    margin: 3rem auto 0;
+    padding: 1rem 1.5rem;
+    background-color: white;
+    box-shadow: var(--bs-box-shadow);
 }
 
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Remove default button styles.
-*/
-
-button,
-input:where([type='button']),
-input:where([type='reset']),
-input:where([type='submit']) {
-  -webkit-appearance: button; /* 1 */
-  background-color: transparent; /* 2 */
-  background-image: none; /* 2 */
+.tarjeta-formulario--ancha {
+    max-width: 600px;
 }
 
-/*
-Use the modern Firefox focus style for all focusable elements.
-*/
-
-:-moz-focusring {
-  outline: auto;
+.vista-previa-imagen {
+    max-width: 200px;
+    max-height: 200px;
 }
 
-/*
-Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
-*/
+/* --- Catálogo --- */
 
-:-moz-ui-invalid {
-  box-shadow: none;
+.filtros {
+    width: 25%;
+    flex-shrink: 0;
+    padding: 95px 32px 0 48px;
 }
 
-/*
-Add the correct vertical alignment in Chrome and Firefox.
-*/
-
-progress {
-  vertical-align: baseline;
+.filtros__panel {
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: var(--sombra-suave);
+    overflow: hidden;
 }
 
-/*
-Correct the cursor style of increment and decrement buttons in Safari.
-*/
-
-::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
-  height: auto;
+.filtros__encabezado {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    margin-bottom: 1.5rem;
 }
 
-/*
-1. Correct the odd appearance in Chrome and Safari.
-2. Correct the outline style in Safari.
-*/
-
-[type='search'] {
-  -webkit-appearance: textfield; /* 1 */
-  outline-offset: -2px; /* 2 */
+.filtros__titulo {
+    margin: 0 1.5rem;
+    line-height: 50px;
+    font-weight: bold;
+    font-size: large;
 }
 
-/*
-Remove the inner padding in Chrome and Safari on macOS.
-*/
-
-::-webkit-search-decoration {
-  -webkit-appearance: none;
+.filtros__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 0 20px;
+    background-color: green;
+    color: white;
 }
 
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Change font properties to `inherit` in Safari.
-*/
-
-::-webkit-file-upload-button {
-  -webkit-appearance: button; /* 1 */
-  font: inherit; /* 2 */
+.fila-precios {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-/*
-Add the correct display in Chrome and Safari.
-*/
-
-summary {
-  display: list-item;
+.fila-precios .form-control {
+    flex: 1;
+    min-width: 0;
 }
 
-/*
-Removes the default spacing and border for appropriate elements.
-*/
-
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
-  margin: 0;
+.catalogo {
+    max-width: 1400px;
+    padding: 1.5rem;
+    background-color: white;
+    box-shadow: var(--bs-box-shadow);
 }
 
-fieldset {
-  margin: 0;
-  padding: 0;
+/* Tantas columnas como quepan: las tarjetas no se aplastan al haber más productos */
+.catalogo__grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
 }
 
-legend {
-  padding: 0;
+.espaciador-lateral {
+    width: 25%;
+    flex-shrink: 0;
 }
 
-ol,
-ul,
-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.producto-tarjeta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+    border: 1px solid #c1b8b8;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/*
-Reset default styling for dialogs.
-*/
-dialog {
-  padding: 0;
+.producto-tarjeta:hover {
+    background-color: #f5f5f5;
 }
 
-/*
-Prevent resizing textareas horizontally by default.
-*/
-
-textarea {
-  resize: vertical;
+.producto-tarjeta__imagen {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid var(--color-borde-suave);
 }
 
-/*
-1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
-2. Set the default placeholder color to the user's configured gray 400 color.
-*/
-
-input::-moz-placeholder, textarea::-moz-placeholder {
-  opacity: 1; /* 1 */
-  color: #9ca3af; /* 2 */
+.producto-tarjeta__nombre {
+    display: flex;
+    align-items: center;
+    min-height: 68px;
+    margin: 0;
+    padding: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+    overflow-wrap: anywhere;
 }
 
-input::placeholder,
-textarea::placeholder {
-  opacity: 1; /* 1 */
-  color: #9ca3af; /* 2 */
+/* Botón al pie: alineado entre tarjetas aunque los nombres ocupen distintas líneas */
+.producto-tarjeta .boton-carrito {
+    margin-top: auto;
 }
 
-/*
-Set the default cursor for buttons.
-*/
-
-button,
-[role="button"] {
-  cursor: pointer;
+.boton-carrito {
+    width: 75%;
+    max-width: 200px;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-acento);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
 
-/*
-Make sure disabled buttons don't get the pointer cursor.
-*/
-:disabled {
-  cursor: default;
+.boton-carrito:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
-/*
-1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
-2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
-   This can trigger a poorly considered lint error in some tools but is included by design.
-*/
+/* --- Carrito --- */
 
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block; /* 1 */
-  vertical-align: middle; /* 2 */
-}
-
-/*
-Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
-*/
-
-img,
-video {
-  max-width: 100%;
-  height: auto;
+.carrito-flotante {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #007bff;
+    box-shadow: var(--sombra-suave);
+    font-size: 1rem;
+    cursor: pointer;
 }
 
-/* Make elements with the HTML hidden attribute stay hidden by default */
-[hidden]:where(:not([hidden="until-found"])) {
-  display: none;
+.carrito-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 640px) {
 
-  .container {
-    max-width: 640px;
-  }
+.carrito-modal--abierto {
+    display: flex;
 }
-@media (min-width: 768px) {
 
-  .container {
-    max-width: 768px;
-  }
+.carrito-modal__contenido {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(1200px, 95vw);
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 8px;
+    background: white;
+    text-align: center;
 }
-@media (min-width: 1024px) {
 
-  .container {
-    max-width: 1024px;
-  }
+.carrito-modal__cerrar {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
 }
-@media (min-width: 1280px) {
 
-  .container {
-    max-width: 1280px;
-  }
+/* Una línea del carrito: la usan el modal y la página de checkout */
+.carrito-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-borde-suave);
+    text-align: left;
 }
-@media (min-width: 1536px) {
 
-  .container {
-    max-width: 1536px;
-  }
+.carrito-linea__producto {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+
+.carrito-linea__imagen {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
-.mt-10 {
-  margin-top: 2.5rem;
-}
-.block {
-  display: block;
-}
-.min-h-screen {
-  min-height: 100vh;
-}
-.bg-gray-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
-}
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+
+.contenedor-angosto {
+    max-width: 1000px;
 }
